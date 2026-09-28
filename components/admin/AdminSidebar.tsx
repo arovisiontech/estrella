@@ -78,9 +78,9 @@ export default function AdminSidebar({ isOpen = true, onClose }: AdminSidebarPro
           <Image
             src="/images/estrella-logo.png"
             alt="Estrella Admin"
-            width={180}
-            height={42}
-            className="h-8 w-auto object-contain"
+            width={140}
+            height={32}
+            className="h-6 sm:h-7 w-auto object-contain max-h-7"
             priority
             unoptimized
           />

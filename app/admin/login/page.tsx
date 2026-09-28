@@ -57,9 +57,9 @@ export default function AdminLoginPage() {
           <Image
             src="/images/estrella-logo.png"
             alt="Estrella Logo"
-            width={240}
-            height={50}
-            className="h-12 w-auto object-contain"
+            width={170}
+            height={38}
+            className="h-8 sm:h-9 w-auto object-contain max-h-9"
             priority
             unoptimized
           />

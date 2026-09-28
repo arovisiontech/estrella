@@ -154,9 +154,9 @@ export default function Navbar() {
             <Image
               src="/images/estrella-logo.png"
               alt="Estrella International"
-              width={200}
-              height={48}
-              className="h-8 sm:h-9 lg:h-10 xl:h-12 w-auto object-contain"
+              width={160}
+              height={36}
+              className="h-6 sm:h-7 lg:h-8 w-auto object-contain max-h-8"
               priority
               unoptimized
             />
