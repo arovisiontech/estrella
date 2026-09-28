@@ -14,10 +14,16 @@ const albertSans = Albert_Sans({
   subsets: ["latin"],
 });
 
+const getBaseUrl = () => {
+  const url = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL;
+  if (url && typeof url === "string" && url.trim().length > 0) {
+    return url.startsWith("http") ? url : `https://${url}`;
+  }
+  return "https://estrella-international.com";
+};
+
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
-  ),
+  metadataBase: new URL(getBaseUrl()),
   title: "Estrella - Enterprise Solutions & Business Inquiry Portal",
   description:
     "Premier corporate manufacturing, bulk inquiries, enterprise distribution, and custom product development.",
