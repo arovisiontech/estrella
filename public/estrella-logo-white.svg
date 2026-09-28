@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 80" fill="none">
+  <!-- ESTRELLA Cyan Block Text with Star emblem with White Outlines -->
+  <g transform="translate(10, 5)">
+    <!-- E -->
+    <path d="M5 8 H42 V17 H18 V24 H38 V33 H18 V40 H42 V49 H5 Z" fill="#00AEF0" stroke="#FFFFFF" stroke-width="1.5" stroke-linejoin="round" />
+    <!-- S -->
+    <path d="M47 8 H84 V18 H62 V22 H84 V49 H47 V39 H69 V35 H47 Z" fill="#00AEF0" stroke="#FFFFFF" stroke-width="1.5" stroke-linejoin="round" />
+    <!-- T -->
+    <path d="M89 8 H126 V18 H114 V49 H101 V18 H89 Z" fill="#00AEF0" stroke="#FFFFFF" stroke-width="1.5" stroke-linejoin="round" />
+    <!-- R -->
+    <path d="M131 8 H164 C172 8 176 12 176 19 C176 25 171 28 162 29 L176 49 H162 L150 31 H145 V49 H131 Z M145 17 V22 H158 C162 22 163 20 163 19 C163 18 161 17 157 17 Z" fill="#00AEF0" stroke="#FFFFFF" stroke-width="1.5" stroke-linejoin="round" />
+    <!-- E -->
+    <path d="M181 8 H218 V17 H194 V24 H214 V33 H194 V40 H218 V49 H181 Z" fill="#00AEF0" stroke="#FFFFFF" stroke-width="1.5" stroke-linejoin="round" />
+    <!-- L -->
+    <path d="M223 8 H236 V40 H258 V49 H223 Z" fill="#00AEF0" stroke="#FFFFFF" stroke-width="1.5" stroke-linejoin="round" />
+    <!-- L with Star above -->
+    <g transform="translate(263, 0)">
+      <!-- 8-point Star -->
+      <path d="M19 0 L23 9 L31 5 L26 14 L35 18 L26 22 L31 31 L23 27 L19 36 L15 27 L7 31 L12 22 L3 18 L12 14 L7 5 L15 9 Z" fill="#00AEF0" stroke="#FFFFFF" stroke-width="1" />
+      <path d="M0 8 H13 V40 H35 V49 H0 Z" fill="#00AEF0" stroke="#FFFFFF" stroke-width="1.5" stroke-linejoin="round" />
+    </g>
+    <!-- A -->
+    <path d="M305 8 H330 L338 49 H324 L321 38 H313 L310 49 H297 Z M315 17 L313 29 H320 L318 17 Z" fill="#00AEF0" stroke="#FFFFFF" stroke-width="1.5" stroke-linejoin="round" />
+  </g>
+
+  <!-- INTERNATIONAL Subtitle Text in White -->
+  <text x="14" y="72" font-family="'Arial Black', 'Impact', sans-serif" font-weight="900" font-size="19" letter-spacing="7.5" fill="#FFFFFF">INTERNATIONAL</text>
+</svg>

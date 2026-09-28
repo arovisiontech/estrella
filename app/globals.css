@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #111111;
+  --brand-blue: #00AEF0;
+  --brand-black: #050505;
+  --brand-white: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-poppins), sans-serif;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.nav-font,
+button.nav-font,
+.nav-menu-link,
+button.nav-menu-link,
+a.nav-menu-link {
+  font-family: var(--font-poppins), sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+button.nav-menu-link {
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  cursor: pointer !important;
+}
+
+.header-logo {
+  height: 50px !important;
+  width: auto !important;
+  max-width: 260px !important;
+  object-fit: contain !important;
+}
+
+@media (min-width: 640px) {
+  .header-logo {
+    height: 56px !important;
+    max-width: 300px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .header-logo {
+    height: 64px !important;
+    max-width: 350px !important;
+  }
+}
+
+.text-xs {
+  font-size: 0.875rem !important;
+  line-height: 1.25rem !important;
+}
+
+.site-container {
+  width: min(100% - 32px, 1800px);
+  margin-inline: auto;
+}
+
+@media (min-width: 1920px) {
+  .site-container {
+    width: min(100% - 64px, 2400px);
+  }
+}
+
+.view-product-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  color: #000000;
+  border: 2px solid #000000;
+  transition: all 0.25s ease-in-out;
+}
+
+.view-product-btn:hover {
+  background-color: #00AEF0 !important;
+  border-color: #00AEF0 !important;
+  color: #ffffff !important;
+}
+
+/* Rich Text Formatting Styles for CMS Editor and Frontend Display */
+.rich-text-content ul,
+.rich-description ul {
+  list-style-type: disc !important;
+  padding-left: 1.75rem !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.rich-text-content ol,
+.rich-description ol {
+  list-style-type: decimal !important;
+  padding-left: 1.75rem !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.rich-text-content li,
+.rich-description li {
+  display: list-item !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.rich-text-content p,
+.rich-description p {
+  margin-bottom: 0.5rem !important;
+}
+
+.rich-text-content h1, .rich-description h1 { font-size: 1.75rem !important; font-weight: 700 !important; margin-block: 0.75rem 0.5rem !important; }
+.rich-text-content h2, .rich-description h2 { font-size: 1.5rem !important; font-weight: 700 !important; margin-block: 0.75rem 0.5rem !important; }
+.rich-text-content h3, .rich-description h3 { font-size: 1.25rem !important; font-weight: 700 !important; margin-block: 0.5rem 0.25rem !important; }
+
+/* Font size tags produced by execCommand('fontSize') */
+.rich-text-content font[size="1"], .rich-description font[size="1"] { font-size: 0.75rem !important; }
+.rich-text-content font[size="2"], .rich-description font[size="2"] { font-size: 0.875rem !important; }
+.rich-text-content font[size="3"], .rich-description font[size="3"] { font-size: 1rem !important; }
+.rich-text-content font[size="4"], .rich-description font[size="4"] { font-size: 1.125rem !important; }
+.rich-text-content font[size="5"], .rich-description font[size="5"] { font-size: 1.25rem !important; }
+.rich-text-content font[size="6"], .rich-description font[size="6"] { font-size: 1.5rem !important; font-weight: 700 !important; }
+.rich-text-content font[size="7"], .rich-description font[size="7"] { font-size: 1.875rem !important; }

@@ -1,0 +1,546 @@
+{
+  "products": [
+    {
+      "id": "prod-sp-1",
+      "name": "Custom Sublimation Basketball Uniform Kit",
+      "slug": "custom-sublimation-basketball-kit",
+      "sku": "EST-SP-001",
+      "price": 4500,
+      "sale_price": 3800,
+      "currency": "PKR",
+      "short_description": "Full sublimation printed custom basketball jersey and shorts set.",
+      "description": "Engineered for high-intensity game performance, our custom sublimation basketball kits feature 100% moisture-wicking polyester micro-mesh.",
+      "main_image_url": "/images/about/gallery-1.jpg",
+      "hover_image_url": "/images/about/gallery-2.jpg",
+      "category_id": "sportswear",
+      "category_name": "Sportswears",
+      "is_featured": true,
+      "is_new": true,
+      "is_active": true,
+      "is_published": true,
+      "sort_order": 0,
+      "source_data": {
+        "highlights": []
+      }
+    },
+    {
+      "id": "prod-sp-2",
+      "name": "Elite Sublimated Tracksuit & Training Suit",
+      "slug": "elite-sublimated-tracksuit",
+      "sku": "EST-SP-002",
+      "price": 5200,
+      "sale_price": null,
+      "currency": "PKR",
+      "short_description": "Windproof and breathable team tracksuit with custom embroidery.",
+      "description": "High performance polyester fleece tracksuit for team athletes and coaches.",
+      "main_image_url": "/images/about/gallery-3.jpg",
+      "hover_image_url": "/images/about/gallery-1.jpg",
+      "category_id": "sportswear",
+      "category_name": "Sportswears",
+      "is_featured": true,
+      "is_new": true,
+      "is_active": true,
+      "is_published": true,
+      "sort_order": 0,
+      "source_data": {
+        "highlights": []
+      }
+    },
+    {
+      "id": "prod-sp-3",
+      "name": "Performance Sublimated Soccer Jersey",
+      "slug": "performance-sublimated-soccer-jersey",
+      "sku": "EST-SP-003",
+      "price": 3600,
+      "sale_price": null,
+      "currency": "PKR",
+      "short_description": "Lightweight quick-dry soccer jersey with custom club crest.",
+      "description": "Custom digital sublimated soccer jersey with breathable mesh side panels.",
+      "main_image_url": "/images/about/gallery-2.jpg",
+      "hover_image_url": "/images/about/gallery-3.jpg",
+      "category_id": "sportswear",
+      "category_name": "Sportswears",
+      "is_featured": true,
+      "is_new": false,
+      "is_active": true,
+      "is_published": true,
+      "sort_order": 0,
+      "source_data": {
+        "highlights": []
+      }
+    },
+    {
+      "id": "prod-sp-4",
+      "name": "Custom Heavyweight Fleece Gym Hoodie",
+      "slug": "custom-fleece-gym-hoodie",
+      "sku": "EST-SP-004",
+      "price": 4800,
+      "sale_price": null,
+      "currency": "PKR",
+      "short_description": "Warm cotton-polyester blend hoodie for workout and casual wear.",
+      "description": "320 GSM heavyweight fleece hoodie with double-lined hood and kangaroo pocket.",
+      "main_image_url": "/images/brochure-parallax.jpeg",
+      "hover_image_url": "/images/about/gallery-1.jpg",
+      "category_id": "sportswear",
+      "category_name": "Sportswears",
+      "is_featured": false,
+      "is_new": false,
+      "is_active": true,
+      "is_published": true,
+      "sort_order": 0,
+      "source_data": {
+        "highlights": []
+      }
+    },
+    {
+      "id": "prod-bx-1",
+      "name": "Pro Leather Training Boxing Gloves",
+      "slug": "pro-leather-boxing-gloves",
+      "sku": "EST-BX-001",
+      "price": 6500,
+      "sale_price": 5900,
+      "currency": "PKR",
+      "short_description": "Handcrafted genuine leather boxing gloves with multi-layer gel foam.",
+      "description": "Designed for professional fighters, constructed from premium cowhide leather.",
+      "main_image_url": "/images/about/gallery-4.jpg",
+      "hover_image_url": "/images/about/gallery-4.jpg",
+      "category_id": "boxing-equipment",
+      "category_name": "Boxing Equipment",
+      "is_featured": true,
+      "is_new": true,
+      "is_active": true,
+      "is_published": true,
+      "sort_order": 0,
+      "source_data": {
+        "highlights": []
+      }
+    },
+    {
+      "id": "prod-bx-2",
+      "name": "Curved Leather Focus Mitts & Target Pads",
+      "slug": "curved-leather-focus-mitts",
+      "sku": "EST-BX-002",
+      "price": 4200,
+      "sale_price": null,
+      "currency": "PKR",
+      "short_description": "High-density foam focus pads for punch combination training.",
+      "description": "Curved design absorbs heavy strikes while keeping trainer wrist protected.",
+      "main_image_url": "/images/about/gallery-4.jpg",
+      "hover_image_url": "/images/about/gallery-4.jpg",
+      "category_id": "boxing-equipment",
+      "category_name": "Boxing Equipment",
+      "is_featured": true,
+      "is_new": false,
+      "is_active": true,
+      "is_published": true,
+      "sort_order": 0,
+      "source_data": {
+        "highlights": []
+      }
+    },
+    {
+      "id": "prod-bx-3",
+      "name": "Full Face Protection Sparring Head Guard",
+      "slug": "full-face-sparring-head-guard",
+      "sku": "EST-BX-003",
+      "price": 5800,
+      "sale_price": null,
+      "currency": "PKR",
+      "short_description": "Padded cheek and chin head guard for maximum safety during sparring.",
+      "description": "Constructed with shock-absorbing foam and adjustable rear lace closure.",
+      "main_image_url": "/images/about/gallery-4.jpg",
+      "hover_image_url": "/images/about/gallery-4.jpg",
+      "category_id": "boxing-equipment",
+      "category_name": "Boxing Equipment",
+      "is_featured": false,
+      "is_new": true,
+      "is_active": true,
+      "is_published": true,
+      "sort_order": 0,
+      "source_data": {
+        "highlights": []
+      }
+    },
+    {
+      "id": "prod-fb-1",
+      "name": "FIFA Standard Thermo-Bonded Soccer Match Ball",
+      "slug": "fifa-thermo-bonded-soccer-ball",
+      "sku": "EST-FB-001",
+      "price": 3200,
+      "sale_price": null,
+      "currency": "PKR",
+      "short_description": "Official size 5 thermo-bonded match soccer ball with textured PU surface.",
+      "description": "Built for professional matches and tournaments, featuring zero water absorption seamless thermal bonding.",
+      "main_image_url": "/images/about/gallery-5.jpg",
+      "hover_image_url": "/images/about/gallery-5.jpg",
+      "category_id": "soccer-footballs",
+      "category_name": "Soccer Footballs",
+      "is_featured": true,
+      "is_new": true,
+      "is_active": true,
+      "is_published": true,
+      "sort_order": 0,
+      "source_data": {
+        "highlights": []
+      }
+    },
+    {
+      "id": "prod-fb-2",
+      "name": "Hand-Stitched Tournament Training Football",
+      "slug": "hand-stitched-training-football",
+      "sku": "EST-FB-002",
+      "price": 2400,
+      "sale_price": 6800,
+      "currency": "PKR",
+      "short_description": "Durable 32-panel hand-stitched soccer ball for academies.",
+      "description": "High durability synthetic leather cover with multi-layer polyester backing.Aroma",
+      "main_image_url": "/uploads/1790573254127-2-2-1000x1332.jpeg",
+      "hover_image_url": "/images/about/gallery-5.jpg",
+      "category_id": "soccer-footballs",
+      "category_name": "Soccer Footballs",
+      "is_featured": true,
+      "is_new": false,
+      "is_active": true,
+      "is_published": true,
+      "sort_order": 0,
+      "source_data": {
+        "highlights": [],
+        "name": "Hand-Stitched Tournament Training Football",
+        "slug": "hand-stitched-training-football",
+        "sku": "EST-FB-002",
+        "colors": [
+          "Red",
+          "Green",
+          "Blue",
+          "Black"
+        ],
+        "sizes": [
+          "Small Left",
+          "Medium Right",
+          "Large Left"
+        ],
+        "featuresText": "",
+        "standardsText": "",
+        "documentsText": "",
+        "standards": "",
+        "documents": "",
+        "galleryImages": [
+          "/images/about/gallery-5.jpg",
+          "/images/about/gallery-5.jpg"
+        ],
+        "thumbnails": [
+          {
+            "src": "/images/about/gallery-5.jpg",
+            "alt": "Hand-Stitched Tournament Training Football"
+          },
+          {
+            "src": "/images/about/gallery-5.jpg",
+            "alt": "Hand-Stitched Tournament Training Football"
+          }
+        ],
+        "mainImage": {
+          "src": "/uploads/1790573254127-2-2-1000x1332.jpeg",
+          "alt": "Hand-Stitched Tournament Training Football"
+        },
+        "hoverImage": {
+          "src": "/images/about/gallery-5.jpg",
+          "alt": "Hand-Stitched Tournament Training Football"
+        }
+      },
+      "subcategory_id": "long-racing-gloves",
+      "materials": [],
+      "features": [],
+      "specifications": {},
+      "catalogue_url": null,
+      "stock_quantity": 46,
+      "manage_stock": false,
+      "allow_backorder": false,
+      "meta_title": null,
+      "meta_description": null,
+      "updated_at": "2026-09-28T05:31:22.423Z"
+    },
+    {
+      "id": "prod-fb-3",
+      "name": "Pro Low-Bounce Futsal Leather Match Ball",
+      "slug": "pro-low-bounce-futsal-ball",
+      "sku": "EST-FB-003",
+      "price": 2800,
+      "sale_price": null,
+      "currency": "PKR",
+      "short_description": "Official size 4 low bounce futsal ball for indoor courts.",
+      "description": "Stuffed bladder technology provides optimal rebound control on hard indoor surfaces.",
+      "main_image_url": "/images/about/gallery-5.jpg",
+      "hover_image_url": "/images/about/gallery-5.jpg",
+      "category_id": "soccer-footballs",
+      "category_name": "Soccer Footballs",
+      "is_featured": false,
+      "is_new": true,
+      "is_active": true,
+      "is_published": true,
+      "sort_order": 0,
+      "source_data": {
+        "highlights": []
+      }
+    }
+  ],
+  "categories": [
+    {
+      "id": "cat-sportswear",
+      "name": "Sportswears",
+      "slug": "sportswear",
+      "description": "Custom digital sublimation sportswear, athletic uniforms, tracksuits, hoodies and performance activewear.",
+      "image_url": "/images/about/gallery-1.jpg",
+      "is_active": true,
+      "sort_order": 0,
+      "subcategories": [
+        {
+          "id": "sub-1",
+          "name": "Tracksuits",
+          "slug": "tracksuits",
+          "category_id": "cat-sportswear",
+          "sort_order": 1,
+          "is_active": true
+        },
+        {
+          "id": "sub-2",
+          "name": "Sublimation Shirts",
+          "slug": "sublimation-shirts",
+          "category_id": "cat-sportswear",
+          "sort_order": 2,
+          "is_active": true
+        },
+        {
+          "id": "sub-3",
+          "name": "Hoodies & Sweatshirts",
+          "slug": "hoodies",
+          "category_id": "cat-sportswear",
+          "sort_order": 3,
+          "is_active": true
+        },
+        {
+          "id": "sub-4",
+          "name": "Gym & Fitness Wear",
+          "slug": "fitness-wear",
+          "category_id": "cat-sportswear",
+          "sort_order": 4,
+          "is_active": true
+        }
+      ]
+    },
+    {
+      "id": "cat-boxing",
+      "name": "Boxing Equipment",
+      "slug": "boxing-equipment",
+      "description": "Handcrafted genuine leather boxing gloves, focus mitts, head guards, punching bags, and fightwear gear.",
+      "image_url": "/images/about/gallery-1.jpg",
+      "is_active": true,
+      "sort_order": 0,
+      "subcategories": [
+        {
+          "id": "sub-5",
+          "name": "Pro Boxing Gloves",
+          "slug": "pro-boxing-gloves",
+          "category_id": "cat-boxing",
+          "sort_order": 1,
+          "is_active": true
+        },
+        {
+          "id": "sub-6",
+          "name": "Focus Mitts & Target Pads",
+          "slug": "focus-pads",
+          "category_id": "cat-boxing",
+          "sort_order": 2,
+          "is_active": true
+        },
+        {
+          "id": "sub-7",
+          "name": "Head Guards & Protection",
+          "slug": "head-guards",
+          "category_id": "cat-boxing",
+          "sort_order": 3,
+          "is_active": true
+        },
+        {
+          "id": "sub-8",
+          "name": "Punching Bags",
+          "slug": "punching-bags",
+          "category_id": "cat-boxing",
+          "sort_order": 4,
+          "is_active": true
+        }
+      ]
+    },
+    {
+      "id": "cat-soccer",
+      "name": "Soccer Footballs",
+      "slug": "soccer-footballs",
+      "description": "FIFA standard thermo-bonded, hand-stitched match footballs, training soccer balls and futsal equipment.",
+      "image_url": "/images/about/gallery-1.jpg",
+      "is_active": true,
+      "sort_order": 0,
+      "subcategories": [
+        {
+          "id": "sub-9",
+          "name": "Official Match Footballs",
+          "slug": "match-footballs",
+          "category_id": "cat-soccer",
+          "sort_order": 1,
+          "is_active": true
+        },
+        {
+          "id": "sub-10",
+          "name": "Training Footballs",
+          "slug": "training-footballs",
+          "category_id": "cat-soccer",
+          "sort_order": 2,
+          "is_active": true
+        },
+        {
+          "id": "sub-11",
+          "name": "Futsal Balls",
+          "slug": "futsal-balls",
+          "category_id": "cat-soccer",
+          "sort_order": 3,
+          "is_active": true
+        },
+        {
+          "id": "sub-12",
+          "name": "Sublimated Footballs",
+          "slug": "sublimated-footballs",
+          "category_id": "cat-soccer",
+          "sort_order": 4,
+          "is_active": true
+        }
+      ]
+    }
+  ],
+  "hero_slides": [
+    {
+      "id": "1",
+      "eyebrow": "Premium Gear",
+      "title": "Protection Engineered For Riders",
+      "description": "Industry-leading motorcycle apparel since 1982",
+      "video_url": "/videos/Motion Edits.mp4",
+      "image_url": "/images/banner.png",
+      "sort_order": 1,
+      "is_active": true
+    },
+    {
+      "id": "2",
+      "eyebrow": "High Performance",
+      "title": "Crafted With Precision",
+      "description": "Professional grade custom sportswear and equipment",
+      "image_url": "/images/banner.png",
+      "sort_order": 2,
+      "is_active": true
+    },
+    {
+      "id": "3",
+      "eyebrow": "Global Quality",
+      "title": "Trusted By Athletes Worldwide",
+      "description": "Innovative design and handcrafted craftsmanship",
+      "image_url": "/images/banner.png",
+      "sort_order": 3,
+      "is_active": true
+    }
+  ],
+  "home_sections": [],
+  "catalogues": [
+    {
+      "title": "hand",
+      "description": null,
+      "file_url": "/uploads/1790589757806-torqlie_sports_web-version.pdf",
+      "cover_image_url": "/uploads/1790589767583-2-2-1000x1332.jpeg",
+      "thumbnail_url": "/uploads/1790589767583-2-2-1000x1332.jpeg",
+      "is_active": true,
+      "sort_order": 0,
+      "source_data": {},
+      "id": "cat-1",
+      "created_at": "2026-09-28T10:02:59.169Z",
+      "updated_at": "2026-09-28T10:02:59.169Z"
+    }
+  ],
+  "departments": [
+    {
+      "id": "dept-1",
+      "name": "Administration",
+      "slug": "administration",
+      "description": "Administration oversees strategic planning, operational management, corporate compliance, financial controls, and inter-departmental coordination across all manufacturing and export divisions.",
+      "short_description": "Strategic planning, corporate compliance, and global operations management.",
+      "image_url": "/uploads/1790586609032-untitled-2-1000x839.jpeg",
+      "is_active": true,
+      "sort_order": 1,
+      "updated_at": "2026-09-28T09:10:20.892Z"
+    },
+    {
+      "id": "dept-2",
+      "name": "Materials & Sourcing",
+      "slug": "materials-sourcing",
+      "description": "Responsible for evaluating, testing, and procuring top-tier technical fabrics, high-grade leather, moisture-wicking micro-polyester, and specialized threads from certified global mills.",
+      "short_description": "Procurement of technical fabrics, premium leather, and certified raw materials.",
+      "image_url": "/images/about/gallery-2.jpg",
+      "is_active": true,
+      "sort_order": 2
+    },
+    {
+      "id": "dept-3",
+      "name": "Cutting & Pattern Making",
+      "slug": "cutting-pattern-making",
+      "description": "Computerized automatic laser cutting and CAD pattern grading ensuring 100% dimensional accuracy, zero fabric distortion, and optimized material consumption across all athletic sizes.",
+      "short_description": "CAD computerized automatic laser pattern cutting & multi-size grading.",
+      "image_url": "/images/about/gallery-3.jpg",
+      "is_active": true,
+      "sort_order": 3
+    },
+    {
+      "id": "dept-4",
+      "name": "Production",
+      "slug": "production",
+      "description": "Advanced manufacturing facility equipped with heavy-duty Japanese automatic sewing machines for reinforced double stitching, flatlock seam assembly, and thermo-bonded panel joining.",
+      "short_description": "High-capacity garment assembly, stitching, and thermo-bonded manufacturing.",
+      "image_url": "/images/about/gallery-4.jpg",
+      "is_active": true,
+      "sort_order": 4
+    },
+    {
+      "id": "dept-5",
+      "name": "Embellishment",
+      "slug": "embellishment",
+      "description": "State-of-the-art Italian digital sublimation printers, multi-head Tajima embroidery machines, screen printing, 3D silicone badging, and metallic foil branding.",
+      "short_description": "Digital sublimation, multi-head embroidery, and 3D silicone badging.",
+      "image_url": "/images/about/gallery-1.jpg",
+      "is_active": true,
+      "sort_order": 5
+    },
+    {
+      "id": "dept-6",
+      "name": "Quality Control",
+      "slug": "quality-control",
+      "description": "Rigorous multi-stage quality control checking every seam, measurement, print accuracy, fabric elasticity, and finish before issuing final export release clearance.",
+      "short_description": "100% piece-by-piece multi-stage quality inspection & lab testing.",
+      "image_url": "/images/about/gallery-5.jpg",
+      "is_active": true,
+      "sort_order": 6
+    },
+    {
+      "id": "dept-7",
+      "name": "Packing & Dispatching",
+      "slug": "packing-dispatching",
+      "description": "Custom branded poly-bagging, silica desiccant inserts, barcode labeling, custom hangtags, and heavy-duty 7-ply corrugated export master cartoning.",
+      "short_description": "Custom poly-bagging, barcode tagging, and global export packaging.",
+      "image_url": "/images/about/gallery-6.jpg",
+      "is_active": true,
+      "sort_order": 7
+    },
+    {
+      "id": "dept-8",
+      "name": "Research & Development",
+      "slug": "research-development",
+      "description": "Continuous innovation in moisture-wicking synthetic fabrics, high-impact shock-absorbing EVA foam padding, aerodynamic match ball surfaces, and athletic fits.",
+      "short_description": "Material science innovation, aerodynamic testing & athletic prototyping.",
+      "image_url": "/images/about/gallery-7.jpg",
+      "is_active": true,
+      "sort_order": 8
+    }
+  ]
+}
