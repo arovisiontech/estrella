@@ -55,12 +55,13 @@ export default function AdminLoginPage() {
       <section className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-xl">
         <div className="flex justify-center mb-6">
           <Image
-            src="/estrella-logo.svg"
+            src="/images/estrella-logo.png"
             alt="Estrella Logo"
             width={240}
             height={50}
             className="h-12 w-auto object-contain"
             priority
+            unoptimized
           />
         </div>
 

@@ -82,6 +82,7 @@ export default function AdminSidebar({ isOpen = true, onClose }: AdminSidebarPro
             height={42}
             className="h-8 w-auto object-contain"
             priority
+            unoptimized
           />
         </Link>
         <div className="flex items-center gap-2">
