@@ -43,15 +43,20 @@ export const getCategoriesWithSubcategories = cache(async (): Promise<CategoryDa
         .order("sort_order", { ascending: true }),
     ]);
 
-    if (catsRes.error || !catsRes.data || catsRes.data.length === 0) {
+    if (catsRes.error || !catsRes.data) {
       return fallback;
     }
 
     const subcats = subcatsRes.data || [];
-    return catsRes.data.map((c) => adaptCategoryRow(c, subcats));
+    const dbCats = catsRes.data.map((c) => adaptCategoryRow(c, subcats));
+
+    const dbIds = new Set(dbCats.map((c) => c.id));
+    const merged = [...dbCats, ...fallback.filter((c) => !dbIds.has(c.id))];
+
+    return merged.length > 0 ? merged : fallback;
   };
 
-  return await withTimeout(fetchFn(), fallback, 600);
+  return await withTimeout(fetchFn(), fallback, 3000);
 });
 
 export async function getCategories(): Promise<CategoryData[]> {

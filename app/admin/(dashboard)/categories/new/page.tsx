@@ -100,12 +100,12 @@ export default function NewCategoryPage() {
   return (
     <div className="min-h-screen bg-black p-6">
       <div className="mx-auto max-w-4xl">
-        <Link href="/admin/categories" className="text-red-500 hover:text-red-400 flex items-center gap-2 mb-6">
+        <Link href="/admin/categories" className="text-[#00AEF0] hover:text-[#0090c8] flex items-center gap-2 mb-6">
           <ArrowLeft className="w-4 h-4" /> Back to Categories
         </Link>
 
         <div className="mb-8">
-          <p className="text-red-500 text-xs font-bold uppercase tracking-wider">Category Management</p>
+          <p className="text-[#00AEF0] text-xs font-bold uppercase tracking-wider">Category Management</p>
           <h1 className="text-3xl font-bold text-white mt-1">Create Category</h1>
         </div>
 
@@ -347,7 +347,7 @@ export default function NewCategoryPage() {
             <button
               type="submit"
               disabled={saving || !!uploadingField}
-              className="flex items-center gap-2 bg-red-600 hover:bg-red-700 disabled:bg-zinc-700 text-white text-sm font-semibold px-8 py-2.5 rounded transition"
+              className="flex items-center gap-2 bg-[#00AEF0] hover:bg-[#0090c8] disabled:bg-zinc-700 text-white text-sm font-semibold px-8 py-2.5 rounded transition shadow-md"
             >
               {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               {saving ? 'Creating...' : 'Create Category'}

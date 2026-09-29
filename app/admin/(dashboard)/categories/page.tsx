@@ -38,6 +38,29 @@ export default function CategoriesPage() {
     let fetchedCats: any[] = [];
     let fetchedSubcats: any[] = [];
 
+    const defaultCatsList = DEFAULT_CATEGORIES.map(c => ({
+      id: c.id,
+      name: c.name,
+      slug: c.slug,
+      is_active: c.is_active,
+      sort_order: c.sort_order,
+    }));
+
+    const defaultSubsList: any[] = [];
+    DEFAULT_CATEGORIES.forEach(c => {
+      (c.subcategories || []).forEach(sub => {
+        defaultSubsList.push({
+          id: sub.id,
+          name: sub.name,
+          slug: sub.slug,
+          category_id: c.id,
+          category_name: c.name,
+          is_active: sub.is_active,
+          sort_order: sub.sort_order,
+        });
+      });
+    });
+
     try {
       const [catsRes, subcatsRes] = await Promise.all([
         supabase.from('categories').select('*').order('sort_order'),
@@ -45,48 +68,28 @@ export default function CategoriesPage() {
       ]);
 
       if (catsRes.data && catsRes.data.length > 0) {
-        fetchedCats = catsRes.data;
+        const catIds = new Set(catsRes.data.map(c => c.id));
+        fetchedCats = [...catsRes.data, ...defaultCatsList.filter(d => !catIds.has(d.id))];
+      } else {
+        fetchedCats = defaultCatsList;
       }
+
       if (subcatsRes.data && subcatsRes.data.length > 0) {
-        fetchedSubcats = subcatsRes.data;
+        const subIds = new Set(subcatsRes.data.map(s => s.id));
+        fetchedSubcats = [...subcatsRes.data, ...defaultSubsList.filter(s => !subIds.has(s.id))];
+      } else {
+        fetchedSubcats = defaultSubsList;
       }
     } catch (e) {
       console.error("Categories admin fetch error:", e);
-    }
-
-    // Fallback to default categories if DB is empty or unpopulated
-    if (fetchedCats.length === 0) {
-      fetchedCats = DEFAULT_CATEGORIES.map(c => ({
-        id: c.id,
-        name: c.name,
-        slug: c.slug,
-        is_active: c.is_active,
-        sort_order: c.sort_order,
-      }));
-    }
-
-    if (fetchedSubcats.length === 0) {
-      const defaultSubsList: any[] = [];
-      DEFAULT_CATEGORIES.forEach(c => {
-        (c.subcategories || []).forEach(sub => {
-          defaultSubsList.push({
-            id: sub.id,
-            name: sub.name,
-            slug: sub.slug,
-            category_id: c.id,
-            category_name: c.name,
-            is_active: sub.is_active,
-            sort_order: sub.sort_order,
-          });
-        });
-      });
+      fetchedCats = defaultCatsList;
       fetchedSubcats = defaultSubsList;
-    } else {
-      fetchedSubcats = fetchedSubcats.map((s) => {
-        const parentCat = fetchedCats.find((c: any) => c.id === s.category_id);
-        return { ...s, category_name: parentCat?.name };
-      });
     }
+
+    fetchedSubcats = fetchedSubcats.map((s) => {
+      const parentCat = fetchedCats.find((c: any) => c.id === s.category_id);
+      return { ...s, category_name: parentCat?.name || s.category_name };
+    });
 
     setCategories(fetchedCats);
     setSubcategories(fetchedSubcats);

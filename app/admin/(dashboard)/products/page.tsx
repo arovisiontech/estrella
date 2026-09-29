@@ -55,37 +55,41 @@ export default function ProductsPage() {
   async function loadProducts() {
     setLoading(true);
     let loadedList: Product[] = [];
+    const defaultsMapped: Product[] = DEFAULT_PRODUCTS.map(p => ({
+      id: p.id,
+      name: p.name,
+      sku: p.sku,
+      slug: p.slug,
+      price: p.price,
+      sale_price: p.salePrice || undefined,
+      stock_quantity: p.stockQuantity || 100,
+      is_featured: Boolean(p.isFeatured),
+      is_active: p.isActive !== false,
+      is_published: p.isPublished !== false,
+      category_id: p.category,
+      category: p.category,
+      main_image_url: p.mainImage.src,
+      source_data: p,
+    }));
 
     try {
       const { data, error } = await supabase
         .from('products')
         .select('*')
-        .order('sort_order', { ascending: true });
+        .order('created_at', { ascending: false });
 
       if (!error && data && data.length > 0) {
         loadedList = data as any[];
+        // Merge DB products with default items if DB items do not overlap
+        const dbIds = new Set(loadedList.map(p => p.id));
+        const extraDefaults = defaultsMapped.filter(d => !dbIds.has(d.id));
+        loadedList = [...loadedList, ...extraDefaults];
+      } else {
+        loadedList = defaultsMapped;
       }
     } catch (e) {
       console.error("Error loading products from DB:", e);
-    }
-
-    if (loadedList.length === 0) {
-      loadedList = DEFAULT_PRODUCTS.map(p => ({
-        id: p.id,
-        name: p.name,
-        sku: p.sku,
-        slug: p.slug,
-        price: p.price,
-        sale_price: p.salePrice || undefined,
-        stock_quantity: p.stockQuantity || 100,
-        is_featured: Boolean(p.isFeatured),
-        is_active: p.isActive !== false,
-        is_published: p.isPublished !== false,
-        category_id: p.category,
-        category: p.category,
-        main_image_url: p.mainImage.src,
-        source_data: p,
-      }));
+      loadedList = defaultsMapped;
     }
 
     setProducts(loadedList);

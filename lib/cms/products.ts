@@ -40,14 +40,20 @@ export async function getProducts(): Promise<AdaptedProduct[]> {
       .eq("is_published", true)
       .order("sort_order", { ascending: true });
 
-    if (error || !prods || prods.length === 0) return fallback;
+    if (error || !prods) return fallback;
 
-    return prods
+    const dbProducts = prods
       .map((p) => adaptProductFromRow(p))
       .filter((p): p is AdaptedProduct => p !== null);
+
+    // Merge Supabase products with local products (DB takes priority, fallback adds any extra)
+    const dbIds = new Set(dbProducts.map((p) => p.id));
+    const merged = [...dbProducts, ...fallback.filter((p) => !dbIds.has(p.id))];
+
+    return merged.length > 0 ? merged : fallback;
   };
 
-  return await withTimeout(fetchFn(), fallback, 600);
+  return await withTimeout(fetchFn(), fallback, 3000);
 }
 
 export async function getFeaturedProducts(): Promise<AdaptedProduct[]> {
