@@ -25,12 +25,20 @@ export default async function Footer() {
                 Let&apos;s Build Something Amazing.
               </h2>
             </div>
-            <Link
-              href={contactInfo.ctaLink}
-              className="inline-block px-6 py-3 bg-[#00AEF0] text-white text-sm font-bold rounded-full hover:bg-[#0095ce] transition-all duration-300 shadow-md whitespace-nowrap"
-            >
-              LET&apos;S DISCUSS
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link
+                href="/catalogue"
+                className="hidden sm:inline-flex items-center justify-center px-6 py-3 border border-slate-700 hover:border-[#00AEF0] text-white hover:text-[#00AEF0] text-sm font-bold rounded-full transition-all duration-300 whitespace-nowrap"
+              >
+                CATALOGUE
+              </Link>
+              <Link
+                href={contactInfo.ctaLink}
+                className="inline-flex items-center justify-center px-6 py-3 bg-[#00AEF0] text-white text-sm font-bold rounded-full hover:bg-[#0095ce] transition-all duration-300 shadow-md whitespace-nowrap"
+              >
+                LET&apos;S DISCUSS
+              </Link>
+            </div>
           </div>
         </div>
 
@@ -123,25 +131,38 @@ export default async function Footer() {
               </nav>
             </div>
 
-            {/* Product Range */}
-            <div>
-              <h3 className="text-sm font-bold uppercase tracking-widest text-[#00AEF0] mb-3">
-                Solutions & Services
-              </h3>
-              <nav className="space-y-2">
-                <ul className="space-y-2">
-                  {productLinks.filter(link => link.href).map((link) => (
-                    <li key={link.id}>
-                      <Link
-                        href={link.href!}
-                        className="text-sm text-slate-400 hover:text-[#00AEF0] transition-colors duration-300"
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
+            {/* Solutions & Services End Column */}
+            <div className="flex flex-col justify-between">
+              <div>
+                <h3 className="text-sm font-bold uppercase tracking-widest text-[#00AEF0] mb-3">
+                  Solutions & Services
+                </h3>
+                <nav className="space-y-2 mb-5">
+                  <ul className="space-y-2">
+                    {productLinks.filter(link => link.href).map((link) => (
+                      <li key={link.id}>
+                        <Link
+                          href={link.href!}
+                          className="text-sm text-slate-400 hover:text-[#00AEF0] transition-colors duration-300"
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              </div>
+
+              {/* End column Catalogue button */}
+              <div className="pt-2">
+                <Link
+                  href="/catalogue"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#00AEF0] text-white text-xs font-bold uppercase tracking-wider rounded-full hover:bg-[#0095ce] transition-all duration-300 shadow-md group"
+                >
+                  <span>View Catalogue</span>
+                  <span className="group-hover:translate-x-1 transition-transform">→</span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>

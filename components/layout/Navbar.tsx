@@ -146,7 +146,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-[100] bg-white border-b border-slate-200 shadow-xs w-full">
-      <div className="site-container h-18 sm:h-20 lg:h-22 flex items-center justify-between gap-2 xl:gap-4 max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-6 xl:px-8">
+      <div className="site-container h-18 sm:h-20 lg:h-22 flex items-center justify-between gap-2 xl:gap-4 px-4 sm:px-6 lg:px-8">
 
         {/* Left: Logo */}
         <div className="flex items-center shrink-0">

@@ -130,132 +130,179 @@ export default function CategoriesPage() {
     c.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  if (loading) return <div className="p-6 text-white">Loading...</div>;
+  if (loading) return <div className="p-6 text-slate-600 font-medium">Loading categories...</div>;
 
   return (
-    <div className="min-h-screen bg-black p-6">
+    <div className="min-h-screen bg-slate-50 p-6 font-sans">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="text-[#00AEF0] text-xs font-bold uppercase tracking-wider">Catalog</p>
-            <h1 className="text-4xl font-bold text-white mt-2">Categories</h1>
-            <p className="text-zinc-400 mt-2">{categories.length} categories, {subcategories.length} subcategories</p>
+            <p className="text-[#00AEF0] text-xs font-bold uppercase tracking-wider">Catalogue</p>
+            <h1 className="text-3xl font-extrabold text-slate-900 mt-1">Categories</h1>
+            <p className="text-slate-500 text-sm mt-1">{categories.length} categories, {subcategories.length} subcategories</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-3">
             <Link
               href="/admin/subcategories/new"
-              className="flex items-center gap-2 bg-[#00AEF0]/20 hover:bg-[#00AEF0]/30 text-[#00AEF0] border border-[#00AEF0]/40 px-4 py-2 rounded text-sm font-medium transition"
+              className="flex items-center gap-2 bg-sky-50 hover:bg-sky-100 text-[#00AEF0] border border-sky-200 px-4 py-2.5 rounded-lg text-sm font-semibold transition shadow-xs"
             >
               <Plus className="w-4 h-4" /> Add Subcategory
             </Link>
             <Link
               href="/admin/categories/new"
-              className="flex items-center gap-2 bg-[#00AEF0] hover:bg-[#0090c8] text-white px-4 py-2 rounded text-sm font-medium transition shadow"
+              className="flex items-center gap-2 bg-[#00AEF0] hover:bg-[#0090c8] text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition shadow-sm"
             >
               <Plus className="w-4 h-4" /> Add Category
             </Link>
           </div>
         </div>
 
-        {message && <div className="mb-4 bg-green-900 text-green-100 p-3 rounded">{message}</div>}
+        {message && (
+          <div className="mb-4 bg-emerald-50 text-emerald-800 border border-emerald-200 p-3.5 rounded-lg text-sm font-medium">
+            {message}
+          </div>
+        )}
 
-        <div className="mb-6 flex items-center gap-4 bg-zinc-900 p-4 rounded">
-          <Search className="w-4 h-4 text-zinc-400" />
+        <div className="mb-6 flex items-center gap-3 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+          <Search className="w-4 h-4 text-slate-400 shrink-0" />
           <input
             type="text"
-            placeholder="Search categories..."
+            placeholder="Search categories by name or slug..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="flex-1 bg-transparent text-white outline-none"
+            className="w-full bg-transparent text-slate-800 outline-none placeholder-slate-400 text-sm"
           />
         </div>
 
-        <div className="border border-zinc-800 bg-zinc-950 rounded-lg overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-zinc-800 bg-zinc-900">
-                <th className="text-left p-4 text-zinc-400">Name</th>
-                <th className="text-left p-4 text-zinc-400">Slug</th>
-                <th className="text-left p-4 text-zinc-400">Type</th>
-                <th className="text-left p-4 text-zinc-400">Sort</th>
-                <th className="text-left p-4 text-zinc-400">Active</th>
-                <th className="text-left p-4 text-zinc-400">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredCategories.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="p-4 text-center text-zinc-400">No categories found</td>
+        <div className="border border-slate-200 bg-white rounded-xl shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead>
+                <tr className="border-b border-slate-200 bg-slate-50 text-slate-600 font-semibold text-xs uppercase tracking-wider">
+                  <th className="p-4">Name</th>
+                  <th className="p-4">Slug</th>
+                  <th className="p-4">Type</th>
+                  <th className="p-4">Sort</th>
+                  <th className="p-4">Status</th>
+                  <th className="p-4">Actions</th>
                 </tr>
-              ) : (
-                filteredCategories.map(cat => {
-                  const subs = subCategoriesByParent(cat.id);
-                  const isExp = expanded.has(cat.id);
-                  return (
-                    <Fragment key={cat.id}>
-                      <tr className="border-b border-zinc-800 hover:bg-zinc-900">
-                        <td className="p-4 text-white flex items-center gap-2">
-                          {subs.length > 0 && (
-                            <button onClick={() => toggleExpanded(cat.id)} className="text-zinc-400">
-                              {isExp ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-                            </button>
-                          )}
-                          {cat.name}
-                        </td>
-                        <td className="p-4 text-zinc-400">{cat.slug}</td>
-                        <td className="p-4 text-zinc-400">Parent</td>
-                        <td className="p-4 text-zinc-400">{cat.sort_order}</td>
-                        <td className="p-4">
-                          <button
-                            onClick={() => toggleActive(cat.id, cat.is_active, false)}
-                            className={`px-2 py-1 rounded text-xs font-semibold ${
-                              cat.is_active ? 'bg-green-900 text-green-100' : 'bg-yellow-900 text-yellow-100'
-                            }`}
-                          >
-                            {cat.is_active ? 'Active' : 'Inactive'}
-                          </button>
-                        </td>
-                        <td className="p-4 flex gap-2">
-                          <Link href={`/admin/categories/${cat.id}/edit`} className="text-blue-400">
-                            <Edit2 className="w-4 h-4" />
-                          </Link>
-                          <button onClick={() => deleteCategory(cat.id, cat.name, false)} className="text-red-400">
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </td>
-                      </tr>
-                      {isExp && subs.map(sub => (
-                        <tr key={sub.id} className="border-b border-zinc-800 hover:bg-zinc-900 bg-zinc-950/50">
-                          <td className="p-4 pl-12 text-zinc-300">{sub.name}</td>
-                          <td className="p-4 text-zinc-400">{sub.slug}</td>
-                          <td className="p-4 text-zinc-400 text-xs">Subcategory</td>
-                          <td className="p-4 text-zinc-400">{sub.sort_order}</td>
+              </thead>
+              <tbody className="divide-y divide-slate-100 text-slate-700">
+                {filteredCategories.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="p-12 text-center text-slate-400 font-medium">
+                      No categories found.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredCategories.map(cat => {
+                    const subs = subCategoriesByParent(cat.id);
+                    const isExp = expanded.has(cat.id);
+                    return (
+                      <Fragment key={cat.id}>
+                        <tr className="hover:bg-slate-50/80 transition-colors">
+                          <td className="p-4 text-slate-900 font-semibold flex items-center gap-2">
+                            {subs.length > 0 && (
+                              <button
+                                onClick={() => toggleExpanded(cat.id)}
+                                className="text-slate-400 hover:text-[#00AEF0] transition-colors p-0.5 rounded cursor-pointer"
+                                title={isExp ? "Collapse subcategories" : "Expand subcategories"}
+                              >
+                                {isExp ? <ChevronDown className="w-4 h-4 text-[#00AEF0]" /> : <ChevronRight className="w-4 h-4" />}
+                              </button>
+                            )}
+                            {cat.name}
+                          </td>
+                          <td className="p-4 text-slate-500 font-mono text-xs">{cat.slug}</td>
+                          <td className="p-4">
+                            <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-50 text-[#00AEF0] border border-sky-200">
+                              Parent
+                            </span>
+                          </td>
+                          <td className="p-4 text-slate-500">{cat.sort_order}</td>
                           <td className="p-4">
                             <button
-                              onClick={() => toggleActive(sub.id, sub.is_active, true)}
-                              className={`px-2 py-1 rounded text-xs font-semibold ${
-                                sub.is_active ? 'bg-green-900 text-green-100' : 'bg-yellow-900 text-yellow-100'
+                              onClick={() => toggleActive(cat.id, cat.is_active, false)}
+                              className={`px-3 py-1 rounded-full text-xs font-semibold shadow-xs cursor-pointer ${
+                                cat.is_active
+                                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                                  : 'bg-amber-100 text-amber-800 border border-amber-200'
                               }`}
                             >
-                              {sub.is_active ? 'Active' : 'Inactive'}
+                              {cat.is_active ? 'Active' : 'Inactive'}
                             </button>
                           </td>
-                          <td className="p-4 flex gap-2">
-                            <Link href={`/admin/subcategories/${sub.id}/edit`} className="text-blue-400">
-                              <Edit2 className="w-4 h-4" />
-                            </Link>
-                            <button onClick={() => deleteCategory(sub.id, sub.name, true)} className="text-red-400">
-                              <Trash2 className="w-4 h-4" />
-                            </button>
+                          <td className="p-4">
+                            <div className="flex items-center gap-2">
+                              <Link
+                                href={`/admin/categories/${cat.id}/edit`}
+                                className="text-[#00AEF0] hover:text-[#0090c8] hover:bg-sky-50 p-2 rounded-lg transition"
+                                title="Edit Category"
+                              >
+                                <Edit2 className="w-4 h-4" />
+                              </Link>
+                              <button
+                                onClick={() => deleteCategory(cat.id, cat.name, false)}
+                                className="text-rose-500 hover:text-rose-700 hover:bg-rose-50 p-2 rounded-lg transition cursor-pointer"
+                                title="Delete Category"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
                           </td>
                         </tr>
-                      ))}
-                    </Fragment>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+                        {isExp && subs.map(sub => (
+                          <tr key={sub.id} className="bg-sky-50/30 hover:bg-sky-50/60 transition-colors border-l-4 border-l-[#00AEF0]">
+                            <td className="p-4 pl-12 text-slate-800 font-medium flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#00AEF0]" />
+                              {sub.name}
+                            </td>
+                            <td className="p-4 text-slate-500 font-mono text-xs">{sub.slug}</td>
+                            <td className="p-4">
+                              <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
+                                Subcategory
+                              </span>
+                            </td>
+                            <td className="p-4 text-slate-500">{sub.sort_order}</td>
+                            <td className="p-4">
+                              <button
+                                onClick={() => toggleActive(sub.id, sub.is_active, true)}
+                                className={`px-3 py-1 rounded-full text-xs font-semibold shadow-xs cursor-pointer ${
+                                  sub.is_active
+                                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                                    : 'bg-amber-100 text-amber-800 border border-amber-200'
+                                }`}
+                              >
+                                {sub.is_active ? 'Active' : 'Inactive'}
+                              </button>
+                            </td>
+                            <td className="p-4">
+                              <div className="flex items-center gap-2">
+                                <Link
+                                  href={`/admin/subcategories/${sub.id}/edit`}
+                                  className="text-[#00AEF0] hover:text-[#0090c8] hover:bg-sky-50 p-2 rounded-lg transition"
+                                  title="Edit Subcategory"
+                                >
+                                  <Edit2 className="w-4 h-4" />
+                                </Link>
+                                <button
+                                  onClick={() => deleteCategory(sub.id, sub.name, true)}
+                                  className="text-rose-500 hover:text-rose-700 hover:bg-rose-50 p-2 rounded-lg transition cursor-pointer"
+                                  title="Delete Subcategory"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </Fragment>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
