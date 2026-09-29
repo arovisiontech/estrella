@@ -70,22 +70,33 @@ export async function POST(request: Request) {
       }
     }
 
-    // 2. Save to local disk (/public/uploads/) so heavy uploads NEVER fail!
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
-    if (!fs.existsSync(uploadsDir)) {
-      fs.mkdirSync(uploadsDir, { recursive: true });
+    // 2. Save to local disk (/public/uploads/) or fall back to Data URL on serverless
+    try {
+      const uploadsDir = path.join(process.cwd(), "public", "uploads");
+      if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+      }
+
+      const fileNameOnDisk = `${timestamp}-${sanitizedName}`;
+      const diskPath = path.join(uploadsDir, fileNameOnDisk);
+      fs.writeFileSync(diskPath, buffer);
+
+      const publicUrl = `/uploads/${fileNameOnDisk}`;
+      return NextResponse.json({
+        success: true,
+        url: publicUrl,
+        message: "File uploaded successfully to local storage.",
+      });
+    } catch (diskErr) {
+      console.warn("Local disk not writable on serverless, using Data URL fallback:", diskErr);
+      const mimeType = file.type || "image/jpeg";
+      const dataUrl = `data:${mimeType};base64,${buffer.toString("base64")}`;
+      return NextResponse.json({
+        success: true,
+        url: dataUrl,
+        message: "File uploaded successfully.",
+      });
     }
-
-    const fileNameOnDisk = `${timestamp}-${sanitizedName}`;
-    const diskPath = path.join(uploadsDir, fileNameOnDisk);
-    fs.writeFileSync(diskPath, buffer);
-
-    const publicUrl = `/uploads/${fileNameOnDisk}`;
-    return NextResponse.json({
-      success: true,
-      url: publicUrl,
-      message: "File uploaded successfully to local storage.",
-    });
   } catch (error: any) {
     console.error("API upload error:", error);
     return NextResponse.json(

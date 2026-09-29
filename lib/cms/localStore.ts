@@ -27,7 +27,9 @@ function getFsAndPath() {
 function getStorePaths() {
   const { fs, path } = getFsAndPath();
   if (!fs || !path) return { fs: null, path: null, DATA_DIR: "", STORE_FILE: "" };
-  const DATA_DIR = path.join(process.cwd(), "data");
+  const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+  const baseDir = isServerless ? "/tmp" : process.cwd();
+  const DATA_DIR = path.join(baseDir, "data");
   const STORE_FILE = path.join(DATA_DIR, "local_store.json");
   return { fs, path, DATA_DIR, STORE_FILE };
 }
