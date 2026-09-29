@@ -32,7 +32,7 @@ export default function MobileAdminSidebar({
         <div className="h-full w-64 bg-black border-r border-zinc-800 flex flex-col">
           <div className="flex items-center justify-between border-b border-zinc-800 p-6">
             <h2 className="text-sm font-bold uppercase tracking-widest text-white">
-              Torque CMS
+              Estrella CMS
             </h2>
             <button
               onClick={onClose}

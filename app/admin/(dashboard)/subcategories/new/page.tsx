@@ -8,6 +8,7 @@ import { uploadAdminFile } from '@/lib/actions/admin/upload';
 import Link from 'next/link';
 import { ArrowLeft, Save, Upload, Loader2, X, Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
+import { saveStoredSubcategory } from '@/lib/cms/clientStorage';
 
 interface Category {
   id: string;
@@ -104,11 +105,21 @@ export default function NewSubcategoryPage() {
     setSaving(true);
     setMessage('');
 
+    const newSubcat = {
+      ...subcategory,
+      id: `sub-${Date.now()}`,
+    };
+
+    saveStoredSubcategory(newSubcat);
+
     try {
       const result = await createSubcategory(subcategory);
       if (result.success) {
+        if (result.data) {
+          saveStoredSubcategory(result.data);
+        }
         setMessage('✅ Subcategory created successfully!');
-        setTimeout(() => router.push('/admin/categories'), 1200);
+        setTimeout(() => router.push('/admin/subcategories'), 1000);
       } else {
         setMessage(`❌ ${result.message || 'Failed to create subcategory'}`);
       }
@@ -120,7 +131,7 @@ export default function NewSubcategoryPage() {
   };
 
   if (loading) {
-    return <div className="p-6 text-white flex items-center gap-2"><Loader2 className="w-5 h-5 animate-spin text-red-600" /> Loading...</div>;
+    return <div className="p-6 text-slate-600 flex items-center gap-2 font-medium"><Loader2 className="w-5 h-5 animate-spin text-[#00AEF0]" /> Loading...</div>;
   }
 
   return (

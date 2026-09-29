@@ -15,6 +15,8 @@ import {
   Layers,
 } from "lucide-react";
 
+import DashboardOverview from "@/components/admin/DashboardOverview";
+
 export default async function DashboardPage() {
   const supabase = await createClient();
   const localStore = readLocalStore();
@@ -45,9 +47,9 @@ export default async function DashboardPage() {
   ]);
 
   // Get counts, fallback to localStore if DB count is 0
-  const productCount = productsResult.count || localStore.products?.length || 5;
+  const productCount = productsResult.count || localStore.products?.length || 9;
   const categoryCount = categoriesResult.count || localStore.categories?.length || 3;
-  const subcategoryCount = subcategoriesResult.count || 6;
+  const subcategoryCount = subcategoriesResult.count || 12;
   const upcomingEvents = eventsResult.count || 2;
   const catalogueCount = cataloguesResult.count || localStore.catalogues?.length || 1;
   const departmentCount = departmentsResult.count || localStore.departments?.length || 4;
@@ -57,7 +59,7 @@ export default async function DashboardPage() {
   const lowStockProducts = lowStockResult.count || 0;
 
   return (
-    <div className="mx-auto max-w-7xl">
+    <div className="mx-auto max-w-7xl pb-12">
       {/* Page header */}
       <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -80,94 +82,16 @@ export default async function DashboardPage() {
         </Link>
       </div>
 
-      {/* Summary cards grid */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Link href="/admin/products">
-          <DashboardCard
-            title="Total Products"
-            count={productCount}
-            icon={Package}
-            description="Active products in catalogue"
-          />
-        </Link>
-
-        <Link href="/admin/categories">
-          <DashboardCard
-            title="Total Categories"
-            count={categoryCount}
-            icon={FolderOpen}
-            description="Product categories"
-          />
-        </Link>
-
-        <Link href="/admin/subcategories">
-          <DashboardCard
-            title="Total Subcategories"
-            count={subcategoryCount}
-            icon={FolderOpen}
-            description="Category subdivisions"
-          />
-        </Link>
-
-        <Link href="/admin/departments">
-          <DashboardCard
-            title="Departments"
-            count={departmentCount}
-            icon={Briefcase}
-            description="Active departments"
-          />
-        </Link>
-
-        <Link href="/admin/events">
-          <DashboardCard
-            title="Events"
-            count={upcomingEvents}
-            icon={Calendar}
-            description="Scheduled events"
-          />
-        </Link>
-
-        <Link href="/admin/catalogues">
-          <DashboardCard
-            title="Catalogues"
-            count={catalogueCount}
-            icon={BookMarked}
-            description="Active catalogues"
-          />
-        </Link>
-
-        <Link href="/admin/inquiries">
-          <DashboardCard
-            title="Contact Inquiries"
-            count={contactInquiries}
-            icon={Mail}
-            description="Pending inquiries"
-          />
-        </Link>
-
-        <Link href="/admin/subscribers">
-          <DashboardCard
-            title="Subscribers"
-            count={newsletterSubscribers}
-            icon={Users}
-            description="Active newsletter subscribers"
-          />
-        </Link>
-
-        <DashboardCard
-          title="Low Stock Products"
-          count={lowStockProducts}
-          icon={AlertCircle}
-          description="Products to restock"
-        />
-
-        <DashboardCard
-          title="Total Orders"
-          count={totalOrders}
-          icon={ShoppingCart}
-          description="Completed orders"
-        />
-      </div>
+      {/* Main Interactive Overview: Stats, All Categories, All Products */}
+      <DashboardOverview
+        initialCounts={{
+          productCount,
+          categoryCount,
+          subcategoryCount,
+          departmentCount,
+          catalogueCount,
+        }}
+      />
 
       {/* Quick Access Section */}
       <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">

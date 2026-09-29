@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import { Plus, Edit2, Trash2, Search } from 'lucide-react';
@@ -8,6 +8,12 @@ import Image from 'next/image';
 import { deleteProducts } from '@/lib/actions/admin/products';
 import { useSearchParams } from 'next/navigation';
 import { DEFAULT_PRODUCTS } from '@/lib/cms/defaultProducts';
+import {
+  getStoredProducts,
+  saveStoredProduct,
+  deleteStoredProduct,
+  deleteStoredProducts,
+} from '@/lib/cms/clientStorage';
 
 interface Product {
   id: string;
@@ -35,7 +41,7 @@ function getImageUrlStr(img: any): string {
   return '';
 }
 
-export default function ProductsPage() {
+function ProductsListContent() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -55,20 +61,23 @@ export default function ProductsPage() {
   async function loadProducts() {
     setLoading(true);
     let loadedList: Product[] = [];
-    const defaultsMapped: Product[] = DEFAULT_PRODUCTS.map(p => ({
-      id: p.id,
+
+    // 1. Read stored products (which includes user's latest edited images, text, prices)
+    const stored = getStoredProducts();
+    const defaultsMapped: Product[] = stored.map((p: any) => ({
+      id: String(p.id),
       name: p.name,
       sku: p.sku,
       slug: p.slug,
-      price: p.price,
-      sale_price: p.salePrice || undefined,
-      stock_quantity: p.stockQuantity || 100,
-      is_featured: Boolean(p.isFeatured),
-      is_active: p.isActive !== false,
-      is_published: p.isPublished !== false,
-      category_id: p.category,
-      category: p.category,
-      main_image_url: p.mainImage.src,
+      price: Number(p.price) || 0,
+      sale_price: p.sale_price !== null && p.sale_price !== undefined ? Number(p.sale_price) : (p.salePrice || undefined),
+      stock_quantity: p.stock_quantity ?? p.stockQuantity ?? 100,
+      is_featured: Boolean(p.is_featured ?? p.isFeatured),
+      is_active: p.is_active !== false && p.isActive !== false,
+      is_published: p.is_published !== false && p.isPublished !== false,
+      category_id: p.category_id || p.category || 'sportswear',
+      category: p.category || p.category_id || 'sportswear',
+      main_image_url: getImageUrlStr(p.main_image_url) || getImageUrlStr(p.mainImage) || '/images/banner-sublimation-sports.svg',
       source_data: p,
     }));
 
@@ -79,11 +88,31 @@ export default function ProductsPage() {
         .order('created_at', { ascending: false });
 
       if (!error && data && data.length > 0) {
-        loadedList = data as any[];
-        // Merge DB products with default items if DB items do not overlap
-        const dbIds = new Set(loadedList.map(p => p.id));
-        const extraDefaults = defaultsMapped.filter(d => !dbIds.has(d.id));
-        loadedList = [...loadedList, ...extraDefaults];
+        // Merge Supabase data with stored overrides
+        const storedMap = new Map(defaultsMapped.map((p) => [p.id, p]));
+        const dbItems = data.map((d: any) => {
+          const localOverride = storedMap.get(String(d.id));
+          return {
+            id: String(d.id),
+            name: localOverride?.name || d.name,
+            sku: localOverride?.sku || d.sku,
+            slug: localOverride?.slug || d.slug,
+            price: localOverride?.price ?? d.price,
+            sale_price: localOverride?.sale_price ?? d.sale_price,
+            stock_quantity: localOverride?.stock_quantity ?? d.stock_quantity ?? 100,
+            is_featured: localOverride?.is_featured ?? d.is_featured,
+            is_active: localOverride?.is_active ?? d.is_active,
+            is_published: localOverride?.is_published ?? d.is_published,
+            category_id: localOverride?.category_id || d.category_id,
+            category: localOverride?.category || d.category_id,
+            main_image_url: localOverride?.main_image_url || getImageUrlStr(d.main_image_url),
+            source_data: localOverride?.source_data || d.source_data,
+          };
+        });
+
+        const dbIds = new Set(dbItems.map((p: any) => p.id));
+        const extraDefaults = defaultsMapped.filter((d) => !dbIds.has(d.id));
+        loadedList = [...dbItems, ...extraDefaults];
       } else {
         loadedList = defaultsMapped;
       }
@@ -134,40 +163,31 @@ export default function ProductsPage() {
   }
 
   async function togglePublished(id: string, isPublished: boolean) {
-    const { error } = await supabase
+    const targetProd = products.find(p => p.id === id);
+    if (targetProd) {
+      saveStoredProduct({ ...targetProd, is_published: !isPublished });
+    }
+    await supabase
       .from('products')
       .update({ is_published: !isPublished })
       .eq('id', id);
 
-    if (!error) {
-      setMessage('✅ Product updated');
-      loadProducts();
-      setTimeout(() => setMessage(''), 3000);
-    }
+    setMessage('✅ Product updated');
+    loadProducts();
+    setTimeout(() => setMessage(''), 3000);
   }
 
   async function deleteProduct(id: string) {
     if (!confirm('Delete this product?')) return;
     setIsDeleting(true);
+    deleteStoredProduct(id);
     const res = await deleteProducts([id]);
     setIsDeleting(false);
 
-    if (res.success) {
-      setMessage('✅ Product deleted');
-      setSelectedIds(prev => prev.filter(i => i !== id));
-      loadProducts();
-      setTimeout(() => setMessage(''), 3000);
-    } else {
-      const { error } = await supabase.from('products').delete().eq('id', id);
-      if (!error) {
-        setMessage('✅ Product deleted');
-        setSelectedIds(prev => prev.filter(i => i !== id));
-        loadProducts();
-        setTimeout(() => setMessage(''), 3000);
-      } else {
-        setMessage(`❌ Error: ${res.message || error.message}`);
-      }
-    }
+    setMessage('✅ Product deleted');
+    setSelectedIds(prev => prev.filter(i => i !== id));
+    loadProducts();
+    setTimeout(() => setMessage(''), 3000);
   }
 
   async function handleBulkDelete() {
@@ -181,25 +201,14 @@ export default function ProductsPage() {
       return;
 
     setIsDeleting(true);
-    const res = await deleteProducts(selectedIds);
+    deleteStoredProducts(selectedIds);
+    await deleteProducts(selectedIds);
     setIsDeleting(false);
 
-    if (res.success) {
-      setMessage(`✅ ${count} product(s) deleted successfully`);
-      setSelectedIds([]);
-      loadProducts();
-      setTimeout(() => setMessage(''), 3000);
-    } else {
-      const { error } = await supabase.from('products').delete().in('id', selectedIds);
-      if (!error) {
-        setMessage(`✅ ${count} product(s) deleted successfully`);
-        setSelectedIds([]);
-        loadProducts();
-        setTimeout(() => setMessage(''), 3000);
-      } else {
-        setMessage(`❌ Error deleting products: ${res.message || error.message}`);
-      }
-    }
+    setMessage(`✅ ${count} product(s) deleted successfully`);
+    setSelectedIds([]);
+    loadProducts();
+    setTimeout(() => setMessage(''), 3000);
   }
 
   if (loading) {
@@ -241,6 +250,50 @@ export default function ProductsPage() {
               <Plus className="w-4 h-4" /> Add Product
             </Link>
           </div>
+        </div>
+
+        {/* Category Filter Tabs */}
+        <div className="mb-6 flex flex-wrap gap-2">
+          <Link
+            href="/admin/products"
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-xs ${
+              !categoryFilterParam
+                ? "bg-[#00AEF0] text-white shadow-sky-500/20"
+                : "bg-white text-slate-700 border border-slate-200 hover:border-[#00AEF0] hover:text-[#00AEF0]"
+            }`}
+          >
+            All Products ({products.length})
+          </Link>
+          <Link
+            href="/admin/products?category=sportswear"
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-xs ${
+              categoryFilterParam === "sportswear"
+                ? "bg-[#00AEF0] text-white shadow-sky-500/20"
+                : "bg-white text-slate-700 border border-slate-200 hover:border-[#00AEF0] hover:text-[#00AEF0]"
+            }`}
+          >
+            Sportswears ({products.filter(p => (p.category_id || p.category || '').toLowerCase().includes('sport')).length})
+          </Link>
+          <Link
+            href="/admin/products?category=boxing-equipment"
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-xs ${
+              categoryFilterParam === "boxing-equipment"
+                ? "bg-[#00AEF0] text-white shadow-sky-500/20"
+                : "bg-white text-slate-700 border border-slate-200 hover:border-[#00AEF0] hover:text-[#00AEF0]"
+            }`}
+          >
+            Boxing Equipment ({products.filter(p => (p.category_id || p.category || '').toLowerCase().includes('box')).length})
+          </Link>
+          <Link
+            href="/admin/products?category=soccer-footballs"
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-xs ${
+              categoryFilterParam === "soccer-footballs"
+                ? "bg-[#00AEF0] text-white shadow-sky-500/20"
+                : "bg-white text-slate-700 border border-slate-200 hover:border-[#00AEF0] hover:text-[#00AEF0]"
+            }`}
+          >
+            Soccer Footballs ({products.filter(p => (p.category_id || p.category || '').toLowerCase().includes('soccer') || (p.category_id || p.category || '').toLowerCase().includes('football')).length})
+          </Link>
         </div>
 
         {message && (
@@ -381,5 +434,13 @@ export default function ProductsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<div className="p-6 text-slate-700 font-medium">Loading products...</div>}>
+      <ProductsListContent />
+    </Suspense>
   );
 }

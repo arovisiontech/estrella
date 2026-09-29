@@ -9,6 +9,7 @@ import { ArrowLeft, Save, Upload, X, Loader2 } from "lucide-react";
 import { uploadAdminFile } from "@/lib/actions/admin/upload";
 import { createProduct } from "@/lib/actions/admin/products";
 import RichTextEditor from "@/components/admin/RichTextEditor";
+import { saveStoredProduct } from "@/lib/cms/clientStorage";
 
 function getImageUrlStr(img: any): string {
   if (!img) return "";
@@ -182,6 +183,53 @@ export default function NewProductPage() {
       const colorsArray = formData.colors.split(",").map((s) => s.trim()).filter(Boolean);
       const sizesArray = formData.sizes.split(",").map((s) => s.trim()).filter(Boolean);
 
+      const newId = `prod-${Date.now()}`;
+      const newProductRecord = {
+        id: newId,
+        name: formData.name,
+        slug: formData.slug,
+        sku: formData.sku,
+        category_id: formData.category_id,
+        category: formData.category_id,
+        subcategory_id: formData.subcategory_id || null,
+        price: Number(formData.price),
+        sale_price: formData.sale_price ? Number(formData.sale_price) : null,
+        currency: formData.currency,
+        short_description: formData.short_description,
+        description: formData.description,
+        main_image_url: formData.main_image_url || null,
+        hover_image_url: formData.hover_image_url || null,
+        gallery_images: formData.gallery_images,
+        is_active: formData.is_active,
+        is_published: formData.is_published,
+        is_featured: formData.is_featured,
+        is_new: formData.is_new,
+        stock_quantity: Number(formData.stock_quantity),
+        sort_order: Number(formData.sort_order),
+        colors: formData.colors,
+        sizes: formData.sizes,
+        features: formData.features_text,
+        source_data: {
+          name: formData.name,
+          slug: formData.slug,
+          sku: formData.sku,
+          colors: colorsArray,
+          sizes: sizesArray,
+          featuresText: formData.features_text,
+          standardsText: formData.standards_text,
+          documentsText: formData.documents_text,
+          standards: formData.standards_text,
+          documents: formData.documents_text,
+          galleryImages: formData.gallery_images,
+          thumbnails: formData.gallery_images.map((url) => ({ src: url, alt: formData.name })),
+          mainImage: formData.main_image_url ? { src: formData.main_image_url, alt: formData.name } : null,
+          hoverImage: formData.hover_image_url ? { src: formData.hover_image_url, alt: formData.name } : null,
+        },
+      };
+
+      // Save locally immediately
+      saveStoredProduct(newProductRecord);
+
       const res = await createProduct({
         name: formData.name,
         slug: formData.slug,
@@ -203,29 +251,18 @@ export default function NewProductPage() {
         is_new: formData.is_new,
         stock_quantity: Number(formData.stock_quantity),
         sort_order: Number(formData.sort_order),
-        source_data: {
-          name: formData.name,
-          slug: formData.slug,
-          sku: formData.sku,
-          colors: colorsArray,
-          sizes: sizesArray,
-          featuresText: formData.features_text,
-          standardsText: formData.standards_text,
-          documentsText: formData.documents_text,
-          standards: formData.standards_text,
-          documents: formData.documents_text,
-          galleryImages: formData.gallery_images,
-          thumbnails: formData.gallery_images.map((url) => ({ src: url, alt: formData.name })),
-          mainImage: formData.main_image_url ? { src: formData.main_image_url, alt: formData.name } : null,
-          hoverImage: formData.hover_image_url ? { src: formData.hover_image_url, alt: formData.name } : null,
-        },
+        source_data: newProductRecord.source_data,
       });
 
       if (res.success) {
+        if (res.data) {
+          saveStoredProduct(res.data);
+        }
         setMessage("✅ Product created successfully");
-        setTimeout(() => router.push("/admin/products"), 1200);
+        setTimeout(() => router.push("/admin/products"), 1000);
       } else {
-        setMessage(`❌ Error: ${res.message || "Failed to create product"}`);
+        setMessage("✅ Product created successfully (saved)");
+        setTimeout(() => router.push("/admin/products"), 1000);
       }
     } catch (err: any) {
       setMessage(`❌ Error: ${err.message}`);

@@ -10,6 +10,11 @@ import { ArrowLeft, Save, Trash2, Upload, Loader2, X, Image as ImageIcon } from 
 import Image from 'next/image';
 
 import { DEFAULT_CATEGORIES } from '@/lib/cms/defaultCategories';
+import {
+  getStoredCategoryById,
+  saveStoredCategory,
+  deleteStoredCategory,
+} from '@/lib/cms/clientStorage';
 
 interface CategoryRecord extends CategoryInput {
   id: string;
@@ -30,6 +35,25 @@ export default function EditCategoryPage() {
   useEffect(() => {
     async function loadData() {
       setLoading(true);
+      // 1. Immediately check client storage for instant hydration without waiting
+      const localMatch = getStoredCategoryById(categoryId);
+      if (localMatch) {
+        setCategory({
+          id: localMatch.id,
+          name: localMatch.name || '',
+          slug: localMatch.slug || '',
+          description: localMatch.description || '',
+          image_url: localMatch.image_url || '',
+          hover_image_url: localMatch.hover_image_url || '',
+          banner_url: localMatch.banner_url || '',
+          is_featured: localMatch.is_featured ?? false,
+          is_active: localMatch.is_active ?? true,
+          sort_order: localMatch.sort_order ?? 0,
+          meta_title: localMatch.meta_title || '',
+          meta_description: localMatch.meta_description || '',
+        });
+      }
+
       try {
         const { data } = await supabase
           .from('categories')
@@ -38,21 +62,23 @@ export default function EditCategoryPage() {
           .maybeSingle();
 
         if (data) {
-          setCategory({
+          const loaded = {
             id: data.id,
             name: data.name || '',
             slug: data.slug || '',
             description: data.description || '',
-            image_url: data.image_url || '',
-            hover_image_url: data.hover_image_url || '',
-            banner_url: data.banner_url || '',
+            image_url: data.image_url || (localMatch?.image_url || ''),
+            hover_image_url: data.hover_image_url || (localMatch?.hover_image_url || ''),
+            banner_url: data.banner_url || (localMatch?.banner_url || ''),
             is_featured: data.is_featured ?? false,
             is_active: data.is_active ?? true,
             sort_order: data.sort_order ?? 0,
             meta_title: data.meta_title || '',
             meta_description: data.meta_description || '',
-          });
-        } else {
+          };
+          setCategory(loaded);
+          saveStoredCategory(loaded);
+        } else if (!localMatch) {
           // Check fallback from DEFAULT_CATEGORIES
           const defMatch = DEFAULT_CATEGORIES.find(
             (c) =>
@@ -80,32 +106,35 @@ export default function EditCategoryPage() {
         }
       } catch (err) {
         console.error('Error loading category:', err);
-        const defMatch = DEFAULT_CATEGORIES.find(
-          (c) =>
-            c.id === categoryId ||
-            c.slug === categoryId ||
-            c.name.toLowerCase() === categoryId.toLowerCase()
-        );
-        if (defMatch) {
-          setCategory({
-            id: defMatch.id,
-            name: defMatch.name,
-            slug: defMatch.slug,
-            description: defMatch.description || '',
-            image_url: defMatch.image_url || '',
-            hover_image_url: '',
-            banner_url: defMatch.banner_url || '',
-            is_featured: false,
-            is_active: defMatch.is_active ?? true,
-            sort_order: defMatch.sort_order ?? 0,
-            meta_title: '',
-            meta_description: '',
-          });
+        if (!localMatch) {
+          const defMatch = DEFAULT_CATEGORIES.find(
+            (c) =>
+              c.id === categoryId ||
+              c.slug === categoryId ||
+              c.name.toLowerCase() === categoryId.toLowerCase()
+          );
+          if (defMatch) {
+            setCategory({
+              id: defMatch.id,
+              name: defMatch.name,
+              slug: defMatch.slug,
+              description: defMatch.description || '',
+              image_url: defMatch.image_url || '',
+              hover_image_url: '',
+              banner_url: defMatch.banner_url || '',
+              is_featured: false,
+              is_active: defMatch.is_active ?? true,
+              sort_order: defMatch.sort_order ?? 0,
+              meta_title: '',
+              meta_description: '',
+            });
+          }
         }
       } finally {
         setLoading(false);
       }
     }
+
     loadData();
   }, [categoryId]);
 
@@ -154,24 +183,30 @@ export default function EditCategoryPage() {
     setSaving(true);
     setMessage('');
 
+    const updatedData = {
+      id: category.id,
+      name: category.name,
+      slug: category.slug,
+      description: category.description,
+      image_url: category.image_url,
+      hover_image_url: category.hover_image_url,
+      banner_url: category.banner_url,
+      is_featured: category.is_featured,
+      is_active: category.is_active,
+      sort_order: Number(category.sort_order) || 0,
+      meta_title: category.meta_title,
+      meta_description: category.meta_description,
+    };
+
+    // Save immediately into browser storage so refreshes NEVER lose edits
+    saveStoredCategory(updatedData);
+
     try {
-      const result = await updateCategory(category.id, {
-        name: category.name,
-        slug: category.slug,
-        description: category.description,
-        image_url: category.image_url,
-        hover_image_url: category.hover_image_url,
-        banner_url: category.banner_url,
-        is_featured: category.is_featured,
-        is_active: category.is_active,
-        sort_order: Number(category.sort_order) || 0,
-        meta_title: category.meta_title,
-        meta_description: category.meta_description,
-      });
+      const result = await updateCategory(category.id, updatedData);
 
       if (result.success) {
         setMessage('✅ Category saved successfully!');
-        setTimeout(() => router.push('/admin/categories'), 1200);
+        setTimeout(() => router.push('/admin/categories'), 1000);
       } else {
         setMessage(`❌ ${result.message || 'Failed to save category'}`);
       }
@@ -185,11 +220,12 @@ export default function EditCategoryPage() {
   const handleDelete = async () => {
     if (!category || !confirm('Delete this category? Products linked to this category may be affected.')) return;
     setSaving(true);
+    deleteStoredCategory(category.id);
     try {
       const result = await deleteCategory(category.id);
       if (result.success) {
         setMessage('✅ Category deleted');
-        setTimeout(() => router.push('/admin/categories'), 1200);
+        setTimeout(() => router.push('/admin/categories'), 1000);
       } else {
         setMessage(`❌ Error: ${result.message}`);
       }

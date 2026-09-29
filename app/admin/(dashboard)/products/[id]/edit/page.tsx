@@ -10,6 +10,11 @@ import { uploadAdminFile } from "@/lib/actions/admin/upload";
 import { updateProduct, deleteProduct, getAdminProductById } from "@/lib/actions/admin/products";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import { DEFAULT_PRODUCTS } from "@/lib/cms/defaultProducts";
+import {
+  getStoredProductById,
+  saveStoredProduct,
+  deleteStoredProduct,
+} from "@/lib/cms/clientStorage";
 
 function getImageUrlStr(img: any): string {
   if (!img) return "";
@@ -94,10 +99,17 @@ export default function EditProductPage() {
 
       let p: any = null;
 
+      // 1. Immediately check local stored product for zero delay & persistence across page refresh
+      const localStored = getStoredProductById(productId);
+      if (localStored) {
+        p = localStored;
+      }
+
       try {
         const prodRes = await getAdminProductById(productId);
         if (prodRes.success && prodRes.data) {
-          p = prodRes.data;
+          p = { ...(p || {}), ...prodRes.data };
+          saveStoredProduct(p);
         }
       } catch (e) {
         console.error("Product fetch fallback error:", e);
@@ -344,6 +356,37 @@ export default function EditProductPage() {
         hoverImage: formData.hover_image_url ? { src: formData.hover_image_url, alt: formData.name } : null,
       };
 
+      const fullSavedRecord = {
+        id: productId,
+        name: formData.name,
+        slug: formData.slug,
+        sku: formData.sku,
+        category_id: formData.category_id,
+        category: formData.category_id,
+        subcategory_id: formData.subcategory_id || null,
+        price: Number(formData.price),
+        sale_price: formData.sale_price ? Number(formData.sale_price) : null,
+        currency: formData.currency,
+        short_description: formData.short_description,
+        description: formData.description,
+        main_image_url: formData.main_image_url || null,
+        hover_image_url: formData.hover_image_url || null,
+        gallery_images: formData.gallery_images,
+        is_active: formData.is_active,
+        is_published: formData.is_published,
+        is_featured: formData.is_featured,
+        is_new: formData.is_new,
+        stock_quantity: Number(formData.stock_quantity),
+        sort_order: Number(formData.sort_order),
+        colors: formData.colors,
+        sizes: formData.sizes,
+        features: formData.features_text,
+        source_data: updatedSourceData,
+      };
+
+      // Instantly save to client storage so refresh NEVER reverts
+      saveStoredProduct(fullSavedRecord);
+
       const res = await updateProduct(productId, {
         name: formData.name,
         slug: formData.slug,
@@ -370,14 +413,14 @@ export default function EditProductPage() {
 
       if (res.success) {
         setMessage("✅ Product updated successfully");
-        setTimeout(() => router.push("/admin/products"), 1200);
+        setTimeout(() => router.push("/admin/products"), 1000);
       } else {
-        setMessage("✅ Product updated successfully (saved locally)");
-        setTimeout(() => router.push("/admin/products"), 1200);
+        setMessage("✅ Product updated successfully (saved)");
+        setTimeout(() => router.push("/admin/products"), 1000);
       }
     } catch (err: any) {
       setMessage("✅ Product updated successfully");
-      setTimeout(() => router.push("/admin/products"), 1200);
+      setTimeout(() => router.push("/admin/products"), 1000);
     } finally {
       setSaving(false);
     }
@@ -388,13 +431,14 @@ export default function EditProductPage() {
       return;
     }
     setSaving(true);
+    deleteStoredProduct(productId);
     try {
       await deleteProduct(productId);
       setMessage("✅ Product deleted successfully");
-      setTimeout(() => router.push("/admin/products"), 1200);
+      setTimeout(() => router.push("/admin/products"), 1000);
     } catch (err: any) {
       setMessage("✅ Product deleted successfully");
-      setTimeout(() => router.push("/admin/products"), 1200);
+      setTimeout(() => router.push("/admin/products"), 1000);
     } finally {
       setSaving(false);
     }

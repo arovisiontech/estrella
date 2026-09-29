@@ -78,6 +78,19 @@ export async function withAdmin<T>(
   }
 }
 
+function isSupabaseConfigured(): boolean {
+  const hasUrl = Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      !process.env.NEXT_PUBLIC_SUPABASE_URL.includes("placeholder")
+  );
+  const hasKey = Boolean(
+    (process.env.SUPABASE_SERVICE_ROLE_KEY && !process.env.SUPABASE_SERVICE_ROLE_KEY.includes("placeholder")) ||
+    (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY && !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.includes("placeholder")) ||
+    (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY && !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.includes("placeholder"))
+  );
+  return hasUrl && hasKey;
+}
+
 import { upsertLocalItem, deleteLocalItem, deleteLocalItems } from "@/lib/cms/localStore";
 
 /** Insert one row and confirm the database actually returned it. */
@@ -93,19 +106,12 @@ export async function adminInsert(
     // Always save to local persistent store
     upsertLocalItem(table, id, rowValues);
 
-    const isConfigured = Boolean(
-      process.env.NEXT_PUBLIC_SUPABASE_URL &&
-        !process.env.NEXT_PUBLIC_SUPABASE_URL.includes("placeholder") &&
-        process.env.SUPABASE_SERVICE_ROLE_KEY &&
-        !process.env.SUPABASE_SERVICE_ROLE_KEY.includes("placeholder")
-    );
-
-    if (!isConfigured) {
+    if (!isSupabaseConfigured()) {
       return { success: true, message: `${label} created successfully.`, data: rowValues };
     }
 
     try {
-      const { data, error } = await db.from(table).insert([rowValues] as never).select();
+      const { data, error } = await db.from(table).upsert([rowValues] as never).select();
       if (!error && data && data.length > 0) {
         return { success: true, message: `${label} created.`, data: data[0] };
       }
@@ -130,14 +136,7 @@ export async function adminUpdate(
     // Always update local persistent store
     upsertLocalItem(table, id, rowValues);
 
-    const isConfigured = Boolean(
-      process.env.NEXT_PUBLIC_SUPABASE_URL &&
-        !process.env.NEXT_PUBLIC_SUPABASE_URL.includes("placeholder") &&
-        process.env.SUPABASE_SERVICE_ROLE_KEY &&
-        !process.env.SUPABASE_SERVICE_ROLE_KEY.includes("placeholder")
-    );
-
-    if (!isConfigured) {
+    if (!isSupabaseConfigured()) {
       return { success: true, message: `${label} updated successfully.`, data: rowValues };
     }
 
@@ -168,14 +167,7 @@ export async function adminDelete(
   return withAdmin(async (db) => {
     deleteLocalItem(table, id);
 
-    const isConfigured = Boolean(
-      process.env.NEXT_PUBLIC_SUPABASE_URL &&
-        !process.env.NEXT_PUBLIC_SUPABASE_URL.includes("placeholder") &&
-        process.env.SUPABASE_SERVICE_ROLE_KEY &&
-        !process.env.SUPABASE_SERVICE_ROLE_KEY.includes("placeholder")
-    );
-
-    if (!isConfigured) {
+    if (!isSupabaseConfigured()) {
       return { success: true, message: `${label} deleted successfully.` };
     }
 
@@ -201,15 +193,8 @@ export async function adminDeleteMany(
   return withAdmin(async (db) => {
     deleteLocalItems(table, ids);
 
-    const isConfigured = Boolean(
-      process.env.NEXT_PUBLIC_SUPABASE_URL &&
-        !process.env.NEXT_PUBLIC_SUPABASE_URL.includes("placeholder") &&
-        process.env.SUPABASE_SERVICE_ROLE_KEY &&
-        !process.env.SUPABASE_SERVICE_ROLE_KEY.includes("placeholder")
-    );
-
-    if (!isConfigured) {
-      return { success: true, message: `${ids.length} ${label}(s) deleted.` };
+    if (!isSupabaseConfigured()) {
+      return { success: true, message: `${label} deleted successfully.` };
     }
 
     try {

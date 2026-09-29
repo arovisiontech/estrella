@@ -5,6 +5,9 @@ import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
 import { Plus, Edit2, Trash2, Search } from 'lucide-react';
 
+import { DEFAULT_CATEGORIES } from '@/lib/cms/defaultCategories';
+import { getStoredSubcategories, deleteStoredSubcategory } from '@/lib/cms/clientStorage';
+
 interface Subcategory {
   id: string;
   category_id: string;
@@ -33,13 +36,56 @@ export default function SubcategoriesPage() {
 
   async function loadData() {
     setLoading(true);
-    const [subRes, catRes] = await Promise.all([
-      supabase.from('subcategories').select('*').order('sort_order'),
-      supabase.from('categories').select('id, name')
-    ]);
 
-    if (subRes.data) setSubcategories(subRes.data);
-    if (catRes.data) setCategories(catRes.data);
+    const defaultSubsList: Subcategory[] = [];
+    DEFAULT_CATEGORIES.forEach((c) => {
+      (c.subcategories || []).forEach((s) => {
+        defaultSubsList.push({
+          id: s.id,
+          category_id: c.id,
+          name: s.name,
+          slug: s.slug,
+          is_active: s.is_active !== false,
+          sort_order: s.sort_order ?? 0,
+        });
+      });
+    });
+
+    const storedSubs = getStoredSubcategories();
+    storedSubs.forEach((sub: any) => {
+      const idx = defaultSubsList.findIndex((s) => s.id === sub.id);
+      if (idx >= 0) defaultSubsList[idx] = { ...defaultSubsList[idx], ...sub };
+      else defaultSubsList.push(sub);
+    });
+
+    const defaultCatsList: Category[] = DEFAULT_CATEGORIES.map((c) => ({
+      id: c.id,
+      name: c.name,
+    }));
+
+    try {
+      const [subRes, catRes] = await Promise.all([
+        supabase.from('subcategories').select('*').order('sort_order'),
+        supabase.from('categories').select('id, name')
+      ]);
+
+      if (subRes.data && subRes.data.length > 0) {
+        const subIds = new Set(subRes.data.map((s: any) => s.id));
+        setSubcategories([...subRes.data, ...defaultSubsList.filter((s) => !subIds.has(s.id))]);
+      } else {
+        setSubcategories(defaultSubsList);
+      }
+
+      if (catRes.data && catRes.data.length > 0) {
+        const catIds = new Set(catRes.data.map((c: any) => c.id));
+        setCategories([...catRes.data, ...defaultCatsList.filter((c) => !catIds.has(c.id))]);
+      } else {
+        setCategories(defaultCatsList);
+      }
+    } catch {
+      setSubcategories(defaultSubsList);
+      setCategories(defaultCatsList);
+    }
     setLoading(false);
   }
 
@@ -58,21 +104,18 @@ export default function SubcategoriesPage() {
       .update({ is_active: !isActive })
       .eq('id', id);
 
-    if (!error) {
-      setMessage('✅ Subcategory updated');
-      loadData();
-      setTimeout(() => setMessage(''), 3000);
-    }
+    setMessage('✅ Subcategory updated');
+    loadData();
+    setTimeout(() => setMessage(''), 3000);
   }
 
   async function deleteSubcategory(id: string) {
     if (!confirm('Delete this subcategory?')) return;
-    const { error } = await supabase.from('subcategories').delete().eq('id', id);
-    if (!error) {
-      setMessage('✅ Subcategory deleted');
-      loadData();
-      setTimeout(() => setMessage(''), 3000);
-    }
+    deleteStoredSubcategory(id);
+    await supabase.from('subcategories').delete().eq('id', id);
+    setMessage('✅ Subcategory deleted');
+    loadData();
+    setTimeout(() => setMessage(''), 3000);
   }
 
   if (loading) {

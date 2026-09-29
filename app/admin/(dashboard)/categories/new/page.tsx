@@ -7,6 +7,7 @@ import { uploadAdminFile } from '@/lib/actions/admin/upload';
 import Link from 'next/link';
 import { ArrowLeft, Save, Upload, Loader2, X, Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
+import { saveStoredCategory } from '@/lib/cms/clientStorage';
 
 const defaultCategory: CategoryInput = {
   name: '',
@@ -71,7 +72,7 @@ export default function NewCategoryPage() {
       setUploadingField(null);
     }
   };
-
+ 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!category.name.trim()) {
@@ -82,11 +83,22 @@ export default function NewCategoryPage() {
     setSaving(true);
     setMessage('');
 
+    const newCategoryData = {
+      ...category,
+      id: `cat-${Date.now()}`,
+    };
+
+    // Save immediately to client storage
+    saveStoredCategory(newCategoryData);
+
     try {
       const result = await createCategory(category);
       if (result.success) {
+        if (result.data) {
+          saveStoredCategory(result.data);
+        }
         setMessage('✅ Category created successfully!');
-        setTimeout(() => router.push('/admin/categories'), 1200);
+        setTimeout(() => router.push('/admin/categories'), 1000);
       } else {
         setMessage(`❌ ${result.message || 'Failed to create category'}`);
       }

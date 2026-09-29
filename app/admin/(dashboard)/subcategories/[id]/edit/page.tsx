@@ -10,6 +10,7 @@ import { ArrowLeft, Save, Trash2, Upload, Loader2, X, Image as ImageIcon } from 
 import Image from 'next/image';
 
 import { DEFAULT_CATEGORIES } from '@/lib/cms/defaultCategories';
+import { saveStoredSubcategory, deleteStoredSubcategory } from '@/lib/cms/clientStorage';
 
 interface SubcategoryRecord extends SubcategoryInput {
   id: string;
@@ -186,24 +187,29 @@ export default function EditSubcategoryPage() {
     setSaving(true);
     setMessage('');
 
+    const updatedSubcat = {
+      id: subcategory.id,
+      category_id: subcategory.category_id,
+      name: subcategory.name,
+      slug: subcategory.slug,
+      description: subcategory.description,
+      image_url: subcategory.image_url,
+      banner_url: subcategory.banner_url,
+      is_featured: subcategory.is_featured,
+      is_active: subcategory.is_active,
+      sort_order: Number(subcategory.sort_order) || 0,
+      meta_title: subcategory.meta_title,
+      meta_description: subcategory.meta_description,
+    };
+
+    saveStoredSubcategory(updatedSubcat);
+
     try {
-      const result = await updateSubcategory(subcategory.id, {
-        category_id: subcategory.category_id,
-        name: subcategory.name,
-        slug: subcategory.slug,
-        description: subcategory.description,
-        image_url: subcategory.image_url,
-        banner_url: subcategory.banner_url,
-        is_featured: subcategory.is_featured,
-        is_active: subcategory.is_active,
-        sort_order: Number(subcategory.sort_order) || 0,
-        meta_title: subcategory.meta_title,
-        meta_description: subcategory.meta_description,
-      });
+      const result = await updateSubcategory(subcategory.id, updatedSubcat);
 
       if (result.success) {
         setMessage('✅ Subcategory saved successfully!');
-        setTimeout(() => router.push('/admin/categories'), 1200);
+        setTimeout(() => router.push('/admin/subcategories'), 1000);
       } else {
         setMessage(`❌ ${result.message || 'Failed to save subcategory'}`);
       }
@@ -217,11 +223,12 @@ export default function EditSubcategoryPage() {
   const handleDelete = async () => {
     if (!subcategory || !confirm('Delete this subcategory?')) return;
     setSaving(true);
+    deleteStoredSubcategory(subcategory.id);
     try {
       const result = await deleteSubcategory(subcategory.id);
       if (result.success) {
         setMessage('✅ Subcategory deleted');
-        setTimeout(() => router.push('/admin/categories'), 1200);
+        setTimeout(() => router.push('/admin/subcategories'), 1000);
       } else {
         setMessage(`❌ Error: ${result.message}`);
       }

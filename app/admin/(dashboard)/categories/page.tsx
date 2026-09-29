@@ -6,6 +6,12 @@ import Link from 'next/link';
 import { Plus, Edit2, Trash2, Search, ChevronDown, ChevronRight } from 'lucide-react';
 
 import { DEFAULT_CATEGORIES } from '@/lib/cms/defaultCategories';
+import {
+  getStoredCategories,
+  deleteStoredCategory,
+  getStoredSubcategories,
+  deleteStoredSubcategory,
+} from '@/lib/cms/clientStorage';
 
 interface Category {
   id: string;
@@ -38,27 +44,37 @@ export default function CategoriesPage() {
     let fetchedCats: any[] = [];
     let fetchedSubcats: any[] = [];
 
-    const defaultCatsList = DEFAULT_CATEGORIES.map(c => ({
+    const storedCats = getStoredCategories();
+    const storedSubs = getStoredSubcategories();
+
+    const defaultCatsList = storedCats.map((c) => ({
       id: c.id,
       name: c.name,
       slug: c.slug,
-      is_active: c.is_active,
-      sort_order: c.sort_order,
+      is_active: c.is_active !== false,
+      sort_order: c.sort_order ?? 0,
     }));
 
     const defaultSubsList: any[] = [];
-    DEFAULT_CATEGORIES.forEach(c => {
-      (c.subcategories || []).forEach(sub => {
+    DEFAULT_CATEGORIES.forEach((c) => {
+      (c.subcategories || []).forEach((sub) => {
         defaultSubsList.push({
           id: sub.id,
           name: sub.name,
           slug: sub.slug,
           category_id: c.id,
           category_name: c.name,
-          is_active: sub.is_active,
-          sort_order: sub.sort_order,
+          is_active: sub.is_active !== false,
+          sort_order: sub.sort_order ?? 0,
         });
       });
+    });
+
+    // Merge stored subcategories on top
+    storedSubs.forEach((sub: any) => {
+      const idx = defaultSubsList.findIndex((s) => s.id === sub.id);
+      if (idx >= 0) defaultSubsList[idx] = { ...defaultSubsList[idx], ...sub };
+      else defaultSubsList.push(sub);
     });
 
     try {
@@ -68,15 +84,15 @@ export default function CategoriesPage() {
       ]);
 
       if (catsRes.data && catsRes.data.length > 0) {
-        const catIds = new Set(catsRes.data.map(c => c.id));
-        fetchedCats = [...catsRes.data, ...defaultCatsList.filter(d => !catIds.has(d.id))];
+        const catIds = new Set(catsRes.data.map((c: any) => c.id));
+        fetchedCats = [...catsRes.data, ...defaultCatsList.filter((d) => !catIds.has(d.id))];
       } else {
         fetchedCats = defaultCatsList;
       }
 
       if (subcatsRes.data && subcatsRes.data.length > 0) {
-        const subIds = new Set(subcatsRes.data.map(s => s.id));
-        fetchedSubcats = [...subcatsRes.data, ...defaultSubsList.filter(s => !subIds.has(s.id))];
+        const subIds = new Set(subcatsRes.data.map((s: any) => s.id));
+        fetchedSubcats = [...subcatsRes.data, ...defaultSubsList.filter((s) => !subIds.has(s.id))];
       } else {
         fetchedSubcats = defaultSubsList;
       }
@@ -103,24 +119,28 @@ export default function CategoriesPage() {
   };
 
   async function toggleActive(id: string, isActive: boolean, isSubcat: boolean) {
+    if (isSubcat) {
+      deleteStoredSubcategory(id);
+    }
     const table = isSubcat ? 'subcategories' : 'categories';
     const { error } = await supabase.from(table).update({ is_active: !isActive }).eq('id', id);
-    if (!error) {
-      setMessage('✅ Updated');
-      loadData();
-      setTimeout(() => setMessage(''), 3000);
-    }
+    setMessage('✅ Updated');
+    loadData();
+    setTimeout(() => setMessage(''), 3000);
   }
 
   async function deleteCategory(id: string, name: string, isSubcat: boolean) {
     if (!confirm(`Delete ${name}?`)) return;
-    const table = isSubcat ? 'subcategories' : 'categories';
-    const { error } = await supabase.from(table).delete().eq('id', id);
-    if (!error) {
-      setMessage('✅ Deleted');
-      loadData();
-      setTimeout(() => setMessage(''), 3000);
+    if (isSubcat) {
+      deleteStoredSubcategory(id);
+    } else {
+      deleteStoredCategory(id);
     }
+    const table = isSubcat ? 'subcategories' : 'categories';
+    await supabase.from(table).delete().eq('id', id);
+    setMessage('✅ Deleted');
+    loadData();
+    setTimeout(() => setMessage(''), 3000);
   }
 
   const subCategoriesByParent = (parentId: string) =>

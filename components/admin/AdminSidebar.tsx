@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { Suspense } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   LayoutDashboard,
   Layers,
@@ -61,13 +62,67 @@ interface AdminSidebarProps {
   onClose?: () => void;
 }
 
-export default function AdminSidebar({ isOpen = true, onClose }: AdminSidebarProps) {
+function SidebarNav({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const isActive = (href: string) => {
     if (href === "/admin") return pathname === "/admin";
-    return pathname === href || pathname.startsWith(href.split("?")[0]);
+
+    if (href.includes("?")) {
+      const [path, query] = href.split("?");
+      if (pathname !== path) return false;
+      const targetParams = new URLSearchParams(query);
+      for (const [key, val] of targetParams.entries()) {
+        if (searchParams.get(key) !== val) return false;
+      }
+      return true;
+    }
+
+    if (href === "/admin/products") {
+      return pathname === "/admin/products" && !searchParams.get("category");
+    }
+
+    return pathname === href || (pathname.startsWith(`${href}/`) && href !== "/admin");
   };
+
+  return (
+    <nav className="flex-1 overflow-y-auto p-4 space-y-6">
+      {sidebarSections.map((section) => (
+        <div key={section.title}>
+          <p className="px-3 text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">
+            {section.title}
+          </p>
+
+          <div className="space-y-1">
+            {section.items.map((item) => {
+              const Icon = item.icon;
+              const active = isActive(item.href);
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={onClose}
+                  className={`flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${
+                    active
+                      ? "bg-[#00AEF0] text-white shadow-md shadow-sky-500/20"
+                      : "text-slate-700 hover:text-[#00AEF0] hover:bg-slate-100"
+                  }`}
+                >
+                  <Icon size={18} />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </nav>
+  );
+}
+
+export default function AdminSidebar({ isOpen = true, onClose }: AdminSidebarProps) {
 
   return (
     <div className={`flex h-full flex-col bg-white border-r border-slate-200 ${isOpen ? "w-64" : "w-0 overflow-hidden"} transition-all duration-300 shadow-xs`}>
@@ -94,38 +149,9 @@ export default function AdminSidebar({ isOpen = true, onClose }: AdminSidebarPro
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex-1 overflow-y-auto p-4 space-y-6">
-        {sidebarSections.map((section) => (
-          <div key={section.title}>
-            <p className="px-3 text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-2">
-              {section.title}
-            </p>
-
-            <div className="space-y-1">
-              {section.items.map((item) => {
-                const Icon = item.icon;
-                const active = isActive(item.href);
-
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={onClose}
-                    className={`flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${
-                      active
-                        ? "bg-[#00AEF0] text-white shadow-md shadow-sky-500/20"
-                        : "text-slate-700 hover:text-[#00AEF0] hover:bg-slate-100"
-                    }`}
-                  >
-                    <Icon size={18} />
-                    <span>{item.label}</span>
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-        ))}
-      </nav>
+      <Suspense fallback={<div className="flex-1 p-4" />}>
+        <SidebarNav onClose={onClose} />
+      </Suspense>
 
       {/* Footer link to view website */}
       <div className="p-4 border-t border-slate-200 bg-slate-50">
