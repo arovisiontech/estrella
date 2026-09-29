@@ -120,7 +120,7 @@ export default function DiscoverCategoriesSection() {
 
   return (
     <section className="py-16 lg:py-24 bg-white border-b border-slate-100 relative overflow-hidden">
-      <div className="site-container">
+      <div className="max-w-[1700px] mx-auto px-4 sm:px-8 lg:px-12">
         
         {/* Section Title (Screenshot 1 Match) */}
         <div className="text-center max-w-2xl mx-auto mb-12">
@@ -130,7 +130,7 @@ export default function DiscoverCategoriesSection() {
         </div>
 
         {/* Carousel Container with Flanking Overlay Left/Right Navigation Buttons */}
-        <div className="relative px-4 sm:px-8">
+        <div className="relative px-2 sm:px-6">
           
           {/* Left Flanking Overlay Arrow Button */}
           <button
@@ -144,17 +144,17 @@ export default function DiscoverCategoriesSection() {
           {/* Scrollable Categories Grid */}
           <div
             ref={scrollContainerRef}
-            className="flex gap-6 sm:gap-8 overflow-x-auto scrollbar-none scroll-smooth py-4 px-2"
+            className="flex gap-6 sm:gap-8 xl:gap-10 overflow-x-auto scrollbar-none scroll-smooth py-4 px-2"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {categories.map((cat) => (
               <div
                 key={cat.id}
-                className="group relative flex-none w-[320px] sm:w-[380px] lg:w-[440px] flex flex-col items-center"
+                className="group relative flex-none w-[320px] sm:w-[380px] lg:w-[460px] xl:w-[500px] 2xl:w-[540px] flex flex-col items-center"
               >
                 <Link href={cat.link || "/categories"} className="w-full block">
                   {/* Category Image Card Container */}
-                  <div className="relative aspect-[16/9] w-full overflow-hidden rounded-3xl bg-slate-100 border border-slate-200 shadow-sm transition-all duration-500 ease-out group-hover:shadow-2xl group-hover:border-[#00AEF0]">
+                  <div className="relative aspect-[16/10] w-full overflow-hidden rounded-3xl bg-slate-100 border border-slate-200 shadow-sm transition-all duration-500 ease-out group-hover:shadow-2xl group-hover:border-[#00AEF0]">
                     <Image
                       src={cat.image}
                       alt={cat.name}
@@ -170,7 +170,7 @@ export default function DiscoverCategoriesSection() {
                       {cat.name}
                     </h3>
                     {cat.subtitle && (
-                      <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">
+                      <p className="text-xs sm:text-sm font-semibold text-slate-500 uppercase tracking-wider mt-1">
                         {cat.subtitle}
                       </p>
                     )}

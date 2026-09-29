@@ -37,14 +37,14 @@ export default async function Footer() {
         {/* Logo and Newsletter Section */}
         <div className="py-8 sm:py-10 border-b border-slate-800">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
-            {/* Logo */}
+            {/* Logo (SS 5: Increased Logo Size) */}
             <div className="relative flex items-center max-w-fit">
               <Image
                 src="/estrella_logo_transparent.png"
                 alt="Estrella International"
-                width={190}
-                height={42}
-                className="h-7 sm:h-8 lg:h-9 w-auto object-contain max-h-9"
+                width={260}
+                height={60}
+                className="h-10 sm:h-12 lg:h-14 w-auto object-contain max-h-14"
                 priority
                 unoptimized
               />

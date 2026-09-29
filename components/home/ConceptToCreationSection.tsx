@@ -103,10 +103,10 @@ export default function ConceptToCreationSection() {
 
             {/* Subtitle 1 & Paragraph */}
             <div className="space-y-3">
-              <h3 className="text-xl sm:text-2xl font-extrabold text-rose-600 tracking-tight">
+              <h3 className="text-xl sm:text-2xl font-extrabold text-[#00AEF0] tracking-tight">
                 {data.subtitle1}
               </h3>
-              <div className="pl-4 border-l-2 border-slate-300">
+              <div className="pl-4 border-l-2 border-[#00AEF0]/40">
                 <p className="text-slate-600 text-sm leading-relaxed font-medium">
                   {data.desc1}
                 </p>
@@ -115,10 +115,10 @@ export default function ConceptToCreationSection() {
 
             {/* Subtitle 2 & Paragraph */}
             <div className="space-y-3">
-              <h3 className="text-xl sm:text-2xl font-extrabold text-rose-600 tracking-tight">
+              <h3 className="text-xl sm:text-2xl font-extrabold text-[#00AEF0] tracking-tight">
                 {data.subtitle2}
               </h3>
-              <div className="pl-4 border-l-2 border-slate-300">
+              <div className="pl-4 border-l-2 border-[#00AEF0]/40">
                 <p className="text-slate-600 text-sm leading-relaxed font-medium">
                   {data.desc2}
                 </p>
@@ -129,7 +129,7 @@ export default function ConceptToCreationSection() {
             <div className="pt-2">
               <Link
                 href={data.buttonLink || "/about"}
-                className="inline-flex items-center gap-2 rounded-md bg-rose-600 px-8 py-4 text-base font-bold text-white shadow-lg shadow-rose-600/20 transition-all duration-300 hover:bg-rose-700 hover:shadow-rose-600/30 hover:scale-[1.02]"
+                className="inline-flex items-center gap-2 rounded-md bg-[#00AEF0] px-8 py-4 text-base font-bold text-white shadow-lg shadow-sky-500/20 transition-all duration-300 hover:bg-[#0095ce] hover:shadow-sky-500/30 hover:scale-[1.02]"
               >
                 <span>{data.buttonText || "About US"}</span>
                 <ArrowRight size={18} />

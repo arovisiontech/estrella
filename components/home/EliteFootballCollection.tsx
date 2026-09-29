@@ -156,11 +156,11 @@ export default function EliteFootballCollection() {
         
         {/* Top Header Badge & Title (Screenshot 1) */}
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <span className="inline-block px-4 py-1.5 rounded-full bg-rose-100 text-rose-600 text-xs font-bold tracking-wide mb-3 shadow-xs">
+          <span className="inline-block px-4 py-1.5 rounded-full bg-sky-50 text-[#00AEF0] border border-sky-200/80 text-xs font-bold tracking-wide mb-3 shadow-xs">
             Made To Move. Built To Win.
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 uppercase tracking-tight">
-            ELITE FOOTBALL COLLECTION
+            FEATURED PRODUCTS
           </h2>
         </div>
 

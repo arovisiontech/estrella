@@ -138,19 +138,19 @@ export default function HowWeWorkSection() {
                 key={step.id || idx}
                 className="p-8 sm:p-10 lg:p-12 border-b md:border-r border-white/20 bg-slate-900/30 backdrop-blur-xs flex flex-col justify-start space-y-5 transition-colors duration-300 hover:bg-white/10"
               >
-                {/* Step Icon with Circular Outline */}
-                <div className="relative h-14 w-14 shrink-0 rounded-full border border-white/40 p-2.5 flex items-center justify-center bg-white/10 shadow-inner">
+                {/* Step Icon with Circular Outline (SS 3: White & Larger) */}
+                <div className="relative h-16 w-16 sm:h-20 sm:w-20 shrink-0 rounded-full border-2 border-white/60 p-3 flex items-center justify-center bg-white/15 shadow-lg group-hover:border-white transition-all">
                   {step.icon ? (
                     <Image
                       src={step.icon}
                       alt={step.title}
-                      width={36}
-                      height={36}
-                      className="h-8 w-8 object-contain filter invert"
+                      width={48}
+                      height={48}
+                      className="h-10 w-10 sm:h-12 sm:w-12 object-contain brightness-0 invert"
                       unoptimized
                     />
                   ) : (
-                    <div className="h-6 w-6 rounded-full bg-[#00AEF0]" />
+                    <div className="h-8 w-8 rounded-full bg-white" />
                   )}
                 </div>
 

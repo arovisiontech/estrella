@@ -155,7 +155,7 @@ export default function WhoWeManufactureForSection() {
           <p className="text-slate-600 text-base sm:text-lg font-medium">
             {data.sectionSubtitle}
           </p>
-          <div className="w-16 h-1 bg-slate-900 mx-auto rounded-full mt-4" />
+          <div className="w-16 h-1 bg-[#00AEF0] mx-auto rounded-full mt-4" />
         </div>
 
         {/* 4 Cards Grid (Matches SS 1 & SS 2) */}
@@ -163,11 +163,11 @@ export default function WhoWeManufactureForSection() {
           {data.cards.map((card) => (
             <div
               key={card.id}
-              className="group relative rounded-3xl border border-slate-200 bg-white p-7 sm:p-8 flex flex-col justify-between shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-slate-400"
+              className="group relative rounded-3xl border border-slate-200 bg-white p-7 sm:p-8 flex flex-col justify-between shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-[#00AEF0]"
             >
               <div className="space-y-6">
-                {/* Circular Dark Icon Container */}
-                <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-[#18182b] text-white shadow-md group-hover:scale-105 transition-transform duration-300">
+                {/* Circular Estrella Cyan Icon Container (SS 4 Match) */}
+                <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-[#00AEF0] text-white shadow-md shadow-sky-500/25 group-hover:scale-110 transition-transform duration-300">
                   {renderCardIcon(card)}
                 </div>
 
