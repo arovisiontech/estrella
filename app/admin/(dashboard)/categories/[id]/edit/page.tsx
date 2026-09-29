@@ -9,6 +9,8 @@ import Link from 'next/link';
 import { ArrowLeft, Save, Trash2, Upload, Loader2, X, Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 
+import { DEFAULT_CATEGORIES } from '@/lib/cms/defaultCategories';
+
 interface CategoryRecord extends CategoryInput {
   id: string;
 }
@@ -28,24 +30,81 @@ export default function EditCategoryPage() {
   useEffect(() => {
     async function loadData() {
       setLoading(true);
-      const { data } = await supabase.from('categories').select('*').eq('id', categoryId).single();
-      if (data) {
-        setCategory({
-          id: data.id,
-          name: data.name || '',
-          slug: data.slug || '',
-          description: data.description || '',
-          image_url: data.image_url || '',
-          hover_image_url: data.hover_image_url || '',
-          banner_url: data.banner_url || '',
-          is_featured: data.is_featured ?? false,
-          is_active: data.is_active ?? true,
-          sort_order: data.sort_order ?? 0,
-          meta_title: data.meta_title || '',
-          meta_description: data.meta_description || '',
-        });
+      try {
+        const { data } = await supabase
+          .from('categories')
+          .select('*')
+          .or(`id.eq.${categoryId},slug.eq.${categoryId}`)
+          .maybeSingle();
+
+        if (data) {
+          setCategory({
+            id: data.id,
+            name: data.name || '',
+            slug: data.slug || '',
+            description: data.description || '',
+            image_url: data.image_url || '',
+            hover_image_url: data.hover_image_url || '',
+            banner_url: data.banner_url || '',
+            is_featured: data.is_featured ?? false,
+            is_active: data.is_active ?? true,
+            sort_order: data.sort_order ?? 0,
+            meta_title: data.meta_title || '',
+            meta_description: data.meta_description || '',
+          });
+        } else {
+          // Check fallback from DEFAULT_CATEGORIES
+          const defMatch = DEFAULT_CATEGORIES.find(
+            (c) =>
+              c.id === categoryId ||
+              c.slug === categoryId ||
+              c.name.toLowerCase() === categoryId.toLowerCase()
+          );
+
+          if (defMatch) {
+            setCategory({
+              id: defMatch.id,
+              name: defMatch.name,
+              slug: defMatch.slug,
+              description: defMatch.description || '',
+              image_url: defMatch.image_url || '',
+              hover_image_url: '',
+              banner_url: defMatch.banner_url || '',
+              is_featured: false,
+              is_active: defMatch.is_active ?? true,
+              sort_order: defMatch.sort_order ?? 0,
+              meta_title: '',
+              meta_description: '',
+            });
+          }
+        }
+      } catch (err) {
+        console.error('Error loading category:', err);
+        const defMatch = DEFAULT_CATEGORIES.find(
+          (c) =>
+            c.id === categoryId ||
+            c.slug === categoryId ||
+            c.name.toLowerCase() === categoryId.toLowerCase()
+        );
+        if (defMatch) {
+          setCategory({
+            id: defMatch.id,
+            name: defMatch.name,
+            slug: defMatch.slug,
+            description: defMatch.description || '',
+            image_url: defMatch.image_url || '',
+            hover_image_url: '',
+            banner_url: defMatch.banner_url || '',
+            is_featured: false,
+            is_active: defMatch.is_active ?? true,
+            sort_order: defMatch.sort_order ?? 0,
+            meta_title: '',
+            meta_description: '',
+          });
+        }
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
     loadData();
   }, [categoryId]);
@@ -141,8 +200,31 @@ export default function EditCategoryPage() {
     }
   };
 
-  if (loading || !category) {
-    return <div className="p-6 text-slate-600 flex items-center gap-2"><Loader2 className="w-5 h-5 animate-spin text-[#00AEF0]" /> Loading category details...</div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 p-6 flex items-center justify-center font-sans">
+        <div className="p-6 text-slate-600 flex items-center gap-2 bg-white rounded-xl border border-slate-200 shadow-sm">
+          <Loader2 className="w-5 h-5 animate-spin text-[#00AEF0]" /> Loading category details...
+        </div>
+      </div>
+    );
+  }
+
+  if (!category) {
+    return (
+      <div className="min-h-screen bg-slate-50 p-6 font-sans">
+        <div className="mx-auto max-w-4xl bg-white p-8 rounded-2xl border border-slate-200 text-center shadow-sm space-y-4">
+          <h2 className="text-xl font-bold text-slate-800">Category Not Found</h2>
+          <p className="text-sm text-slate-500">Could not find category with ID &quot;{categoryId}&quot;.</p>
+          <Link
+            href="/admin/categories"
+            className="inline-flex items-center gap-2 bg-[#00AEF0] text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-[#0090c8] transition"
+          >
+            <ArrowLeft className="w-4 h-4" /> Back to Categories
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (

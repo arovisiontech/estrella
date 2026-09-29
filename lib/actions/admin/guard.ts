@@ -146,6 +146,11 @@ export async function adminUpdate(
       if (!error && data && data.length > 0) {
         return { success: true, message: `${label} updated.`, data: data[0] };
       }
+      // If update matched 0 rows, row may originate from default seed items, try upserting
+      const { data: upsertData, error: upsertError } = await db.from(table).upsert([rowValues] as never).select();
+      if (!upsertError && upsertData && upsertData.length > 0) {
+        return { success: true, message: `${label} saved.`, data: upsertData[0] };
+      }
     } catch (e) {
       console.warn(`Supabase update failed for ${table}, using local store fallback:`, e);
     }

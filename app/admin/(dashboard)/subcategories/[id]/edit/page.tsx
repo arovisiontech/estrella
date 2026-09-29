@@ -9,6 +9,8 @@ import Link from 'next/link';
 import { ArrowLeft, Save, Trash2, Upload, Loader2, X, Image as ImageIcon } from 'lucide-react';
 import Image from 'next/image';
 
+import { DEFAULT_CATEGORIES } from '@/lib/cms/defaultCategories';
+
 interface SubcategoryRecord extends SubcategoryInput {
   id: string;
 }
@@ -34,29 +36,103 @@ export default function EditSubcategoryPage() {
   useEffect(() => {
     async function loadData() {
       setLoading(true);
-      const [subcatRes, catsRes] = await Promise.all([
-        supabase.from('subcategories').select('*').eq('id', subcategoryId).single(),
-        supabase.from('categories').select('*').order('name', { ascending: true })
-      ]);
+      try {
+        const [subcatRes, catsRes] = await Promise.all([
+          supabase.from('subcategories').select('*').or(`id.eq.${subcategoryId},slug.eq.${subcategoryId}`).maybeSingle(),
+          supabase.from('categories').select('*').order('name', { ascending: true })
+        ]);
 
-      if (subcatRes.data) {
-        setSubcategory({
-          id: subcatRes.data.id,
-          category_id: subcatRes.data.category_id || '',
-          name: subcatRes.data.name || '',
-          slug: subcatRes.data.slug || '',
-          description: subcatRes.data.description || '',
-          image_url: subcatRes.data.image_url || '',
-          banner_url: subcatRes.data.banner_url || '',
-          is_featured: subcatRes.data.is_featured ?? false,
-          is_active: subcatRes.data.is_active ?? true,
-          sort_order: subcatRes.data.sort_order ?? 0,
-          meta_title: subcatRes.data.meta_title || '',
-          meta_description: subcatRes.data.meta_description || '',
-        });
+        let loadedSubcat: SubcategoryRecord | null = null;
+
+        if (subcatRes.data) {
+          loadedSubcat = {
+            id: subcatRes.data.id,
+            category_id: subcatRes.data.category_id || '',
+            name: subcatRes.data.name || '',
+            slug: subcatRes.data.slug || '',
+            description: subcatRes.data.description || '',
+            image_url: subcatRes.data.image_url || '',
+            banner_url: subcatRes.data.banner_url || '',
+            is_featured: subcatRes.data.is_featured ?? false,
+            is_active: subcatRes.data.is_active ?? true,
+            sort_order: subcatRes.data.sort_order ?? 0,
+            meta_title: subcatRes.data.meta_title || '',
+            meta_description: subcatRes.data.meta_description || '',
+          };
+        } else {
+          // Check DEFAULT_CATEGORIES for matching subcategory
+          for (const c of DEFAULT_CATEGORIES) {
+            const found = (c.subcategories || []).find(
+              (s) =>
+                s.id === subcategoryId ||
+                s.slug === subcategoryId ||
+                s.name.toLowerCase() === subcategoryId.toLowerCase()
+            );
+            if (found) {
+              loadedSubcat = {
+                id: found.id,
+                category_id: c.id,
+                name: found.name,
+                slug: found.slug,
+                description: '',
+                image_url: '',
+                banner_url: '',
+                is_featured: false,
+                is_active: found.is_active ?? true,
+                sort_order: found.sort_order ?? 0,
+                meta_title: '',
+                meta_description: '',
+              };
+              break;
+            }
+          }
+        }
+
+        setSubcategory(loadedSubcat);
+
+        // For categories list:
+        let allCats: Category[] = catsRes.data || [];
+        if (allCats.length === 0) {
+          allCats = DEFAULT_CATEGORIES.map(c => ({ id: c.id, name: c.name }));
+        } else {
+          DEFAULT_CATEGORIES.forEach(c => {
+            if (!allCats.some(x => x.id === c.id || x.name.toLowerCase() === c.name.toLowerCase())) {
+              allCats.push({ id: c.id, name: c.name });
+            }
+          });
+        }
+        setCategories(allCats);
+      } catch (err) {
+        console.error('Subcategory load error:', err);
+        for (const c of DEFAULT_CATEGORIES) {
+          const found = (c.subcategories || []).find(
+            (s) =>
+              s.id === subcategoryId ||
+              s.slug === subcategoryId ||
+              s.name.toLowerCase() === subcategoryId.toLowerCase()
+          );
+          if (found) {
+            setSubcategory({
+              id: found.id,
+              category_id: c.id,
+              name: found.name,
+              slug: found.slug,
+              description: '',
+              image_url: '',
+              banner_url: '',
+              is_featured: false,
+              is_active: found.is_active ?? true,
+              sort_order: found.sort_order ?? 0,
+              meta_title: '',
+              meta_description: '',
+            });
+            break;
+          }
+        }
+        setCategories(DEFAULT_CATEGORIES.map(c => ({ id: c.id, name: c.name })));
+      } finally {
+        setLoading(false);
       }
-      if (catsRes.data) setCategories(catsRes.data);
-      setLoading(false);
     }
     loadData();
   }, [subcategoryId]);
@@ -156,8 +232,31 @@ export default function EditSubcategoryPage() {
     }
   };
 
-  if (loading || !subcategory) {
-    return <div className="p-6 text-slate-600 flex items-center gap-2"><Loader2 className="w-5 h-5 animate-spin text-[#00AEF0]" /> Loading subcategory details...</div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 p-6 flex items-center justify-center font-sans">
+        <div className="p-6 text-slate-600 flex items-center gap-2 bg-white rounded-xl border border-slate-200 shadow-sm">
+          <Loader2 className="w-5 h-5 animate-spin text-[#00AEF0]" /> Loading subcategory details...
+        </div>
+      </div>
+    );
+  }
+
+  if (!subcategory) {
+    return (
+      <div className="min-h-screen bg-slate-50 p-6 font-sans">
+        <div className="mx-auto max-w-4xl bg-white p-8 rounded-2xl border border-slate-200 text-center shadow-sm space-y-4">
+          <h2 className="text-xl font-bold text-slate-800">Subcategory Not Found</h2>
+          <p className="text-sm text-slate-500">Could not find subcategory with ID &quot;{subcategoryId}&quot;.</p>
+          <Link
+            href="/admin/categories"
+            className="inline-flex items-center gap-2 bg-[#00AEF0] text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-[#0090c8] transition"
+          >
+            <ArrowLeft className="w-4 h-4" /> Back to Categories
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (
