@@ -17,7 +17,24 @@ import {
   Image as ImageIcon,
 } from "lucide-react";
 
-const sidebarSections = [
+type NavChild = {
+  label: string;
+  href: string;
+};
+
+type NavItem = {
+  label: string;
+  href: string;
+  icon: any;
+  children?: NavChild[];
+};
+
+type NavSection = {
+  title: string;
+  items: NavItem[];
+};
+
+const sidebarSections: NavSection[] = [
   {
     title: "HOMEPAGE SECTIONS",
     items: [
@@ -36,10 +53,41 @@ const sidebarSections = [
   {
     title: "PRODUCT PAGES",
     items: [
-      { label: "Sportswears", href: "/admin/products?category=sportswear", icon: ShoppingBag },
-      { label: "Boxing Equipment", href: "/admin/products?category=boxing-equipment", icon: FolderOpen },
-      { label: "Soccer Footballs", href: "/admin/products?category=soccer-footballs", icon: FolderOpen },
+      {
+        label: "Sportswears",
+        href: "/admin/products?category=sportswear",
+        icon: ShoppingBag,
+        children: [
+          { label: "Tracksuits", href: "/admin/products?category=sportswear&subcategory=tracksuits" },
+          { label: "Sublimation Shirts", href: "/admin/products?category=sportswear&subcategory=sublimation-shirts" },
+          { label: "Hoodies & Sweatshirts", href: "/admin/products?category=sportswear&subcategory=hoodies" },
+          { label: "Gym & Fitness Wear", href: "/admin/products?category=sportswear&subcategory=fitness-wear" },
+        ],
+      },
+      {
+        label: "Boxing Equipment",
+        href: "/admin/products?category=boxing-equipment",
+        icon: FolderOpen,
+        children: [
+          { label: "Pro Boxing Gloves", href: "/admin/products?category=boxing-equipment&subcategory=pro-boxing-gloves" },
+          { label: "Focus Mitts & Target Pads", href: "/admin/products?category=boxing-equipment&subcategory=focus-pads" },
+          { label: "Head Guards & Protection", href: "/admin/products?category=boxing-equipment&subcategory=head-guards" },
+          { label: "Punching Bags", href: "/admin/products?category=boxing-equipment&subcategory=punching-bags" },
+        ],
+      },
+      {
+        label: "Soccer Footballs",
+        href: "/admin/products?category=soccer-footballs",
+        icon: FolderOpen,
+        children: [
+          { label: "Official Match Footballs", href: "/admin/products?category=soccer-footballs&subcategory=match-footballs" },
+          { label: "Training Footballs", href: "/admin/products?category=soccer-footballs&subcategory=training-footballs" },
+          { label: "Futsal Balls", href: "/admin/products?category=soccer-footballs&subcategory=futsal-balls" },
+          { label: "Sublimated Footballs", href: "/admin/products?category=soccer-footballs&subcategory=sublimated-footballs" },
+        ],
+      },
       { label: "All Categories", href: "/admin/categories", icon: FolderOpen },
+      { label: "All Subcategories", href: "/admin/subcategories", icon: FolderOpen },
       { label: "All Products", href: "/admin/products", icon: ShoppingBag },
     ],
   },
@@ -80,10 +128,20 @@ function SidebarNav({ onClose }: { onClose?: () => void }) {
     }
 
     if (href === "/admin/products") {
-      return pathname === "/admin/products" && !searchParams.get("category");
+      return (
+        pathname === "/admin/products" &&
+        !searchParams.get("category") &&
+        !searchParams.get("subcategory")
+      );
     }
 
     return pathname === href || (pathname.startsWith(`${href}/`) && href !== "/admin");
+  };
+
+  const isParentExpanded = (item: NavItem) => {
+    if (!item.children || item.children.length === 0) return false;
+    if (isActive(item.href)) return true;
+    return item.children.some((c) => isActive(c.href));
   };
 
   return (
@@ -98,21 +156,47 @@ function SidebarNav({ onClose }: { onClose?: () => void }) {
             {section.items.map((item) => {
               const Icon = item.icon;
               const active = isActive(item.href);
+              const expanded = isParentExpanded(item);
 
               return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={onClose}
-                  className={`flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${
-                    active
-                      ? "bg-[#00AEF0] text-white shadow-md shadow-sky-500/20"
-                      : "text-slate-700 hover:text-[#00AEF0] hover:bg-slate-100"
-                  }`}
-                >
-                  <Icon size={18} />
-                  <span>{item.label}</span>
-                </Link>
+                <div key={item.href} className="space-y-1">
+                  <Link
+                    href={item.href}
+                    onClick={onClose}
+                    className={`flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${
+                      active
+                        ? "bg-[#00AEF0] text-white shadow-md shadow-sky-500/20"
+                        : "text-slate-700 hover:text-[#00AEF0] hover:bg-slate-100"
+                    }`}
+                  >
+                    <Icon size={18} />
+                    <span>{item.label}</span>
+                  </Link>
+
+                  {/* Nested Subcategories */}
+                  {item.children && item.children.length > 0 && (
+                    <div className="pl-7 pr-1 py-1 space-y-0.5 border-l-2 border-slate-200 ml-4 my-1">
+                      {item.children.map((child) => {
+                        const childActive = isActive(child.href);
+                        return (
+                          <Link
+                            key={child.href}
+                            href={child.href}
+                            onClick={onClose}
+                            className={`flex items-center gap-2 py-1.5 px-2.5 rounded-lg text-xs font-medium transition ${
+                              childActive
+                                ? "text-[#00AEF0] bg-sky-50 font-bold"
+                                : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+                            }`}
+                          >
+                            <span className={`w-1.5 h-1.5 rounded-full ${childActive ? "bg-[#00AEF0]" : "bg-slate-300"}`} />
+                            <span>{child.label}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               );
             })}
           </div>

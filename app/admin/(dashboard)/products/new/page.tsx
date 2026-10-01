@@ -24,8 +24,32 @@ export default function NewProductPage() {
   const router = useRouter();
   const supabase = createClient();
 
-  const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
-  const [subcategories, setSubcategories] = useState<{ id: string; name: string; category_id: string }[]>([]);
+  const DEFAULT_ALL_CATEGORIES = [
+    { id: "sportswear", name: "Sportswears" },
+    { id: "boxing-equipment", name: "Boxing Equipment" },
+    { id: "soccer-footballs", name: "Soccer Footballs" },
+  ];
+
+  const DEFAULT_ALL_SUBCATEGORIES = [
+    // Sportswears (SS 1)
+    { id: "tracksuits", name: "Tracksuits", category_id: "sportswear" },
+    { id: "sublimation-shirts", name: "Sublimation Shirts", category_id: "sportswear" },
+    { id: "hoodies", name: "Hoodies & Sweatshirts", category_id: "sportswear" },
+    { id: "fitness-wear", name: "Gym & Fitness Wear", category_id: "sportswear" },
+    // Boxing Equipment (SS 2)
+    { id: "pro-boxing-gloves", name: "Pro Boxing Gloves", category_id: "boxing-equipment" },
+    { id: "focus-pads", name: "Focus Mitts & Target Pads", category_id: "boxing-equipment" },
+    { id: "head-guards", name: "Head Guards & Protection", category_id: "boxing-equipment" },
+    { id: "punching-bags", name: "Punching Bags", category_id: "boxing-equipment" },
+    // Soccer Footballs (SS 3)
+    { id: "match-footballs", name: "Official Match Footballs", category_id: "soccer-footballs" },
+    { id: "training-footballs", name: "Training Footballs", category_id: "soccer-footballs" },
+    { id: "futsal-balls", name: "Futsal Balls", category_id: "soccer-footballs" },
+    { id: "sublimated-footballs", name: "Sublimated Footballs", category_id: "soccer-footballs" },
+  ];
+
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>(DEFAULT_ALL_CATEGORIES);
+  const [subcategories, setSubcategories] = useState<{ id: string; name: string; category_id: string }[]>(DEFAULT_ALL_SUBCATEGORIES);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingMain, setUploadingMain] = useState(false);
@@ -67,8 +91,25 @@ export default function NewProductPage() {
         supabase.from("subcategories").select("id, name, category_id").order("sort_order", { ascending: true }),
       ]);
 
-      if (catsRes.data) setCategories(catsRes.data);
-      if (subcatsRes.data) setSubcategories(subcatsRes.data);
+      const mergedCats = [...DEFAULT_ALL_CATEGORIES];
+      if (catsRes.data && catsRes.data.length > 0) {
+        catsRes.data.forEach((c) => {
+          if (!mergedCats.some((mc) => mc.id === c.id || mc.name.toLowerCase() === c.name.toLowerCase())) {
+            mergedCats.push(c);
+          }
+        });
+      }
+      setCategories(mergedCats);
+
+      const mergedSubcats = [...DEFAULT_ALL_SUBCATEGORIES];
+      if (subcatsRes.data && subcatsRes.data.length > 0) {
+        subcatsRes.data.forEach((s) => {
+          if (!mergedSubcats.some((ms) => ms.id === s.id || ms.name.toLowerCase() === s.name.toLowerCase())) {
+            mergedSubcats.push(s);
+          }
+        });
+      }
+      setSubcategories(mergedSubcats);
       setLoading(false);
     }
     loadData();
@@ -183,6 +224,9 @@ export default function NewProductPage() {
       const colorsArray = formData.colors.split(",").map((s) => s.trim()).filter(Boolean);
       const sizesArray = formData.sizes.split(",").map((s) => s.trim()).filter(Boolean);
 
+      const selectedSubObj = subcategories.find((s) => s.id === formData.subcategory_id);
+      const subcategoryName = selectedSubObj ? selectedSubObj.name : (formData.subcategory_id || "");
+
       const newId = `prod-${Date.now()}`;
       const newProductRecord = {
         id: newId,
@@ -192,6 +236,7 @@ export default function NewProductPage() {
         category_id: formData.category_id,
         category: formData.category_id,
         subcategory_id: formData.subcategory_id || null,
+        subcategory: subcategoryName,
         price: Number(formData.price),
         sale_price: formData.sale_price ? Number(formData.sale_price) : null,
         currency: formData.currency,
@@ -213,6 +258,7 @@ export default function NewProductPage() {
           name: formData.name,
           slug: formData.slug,
           sku: formData.sku,
+          subcategory: subcategoryName,
           colors: colorsArray,
           sizes: sizesArray,
           featuresText: formData.features_text,
@@ -256,7 +302,7 @@ export default function NewProductPage() {
 
       if (res.success) {
         if (res.data) {
-          saveStoredProduct(res.data);
+          saveStoredProduct({ ...res.data, subcategory: subcategoryName });
         }
         setMessage("✅ Product created successfully");
         setTimeout(() => router.push("/admin/products"), 1000);
@@ -271,9 +317,16 @@ export default function NewProductPage() {
     }
   };
 
-  const filteredSubcategories = subcategories.filter(
-    (s) => s.category_id === formData.category_id
-  );
+  const filteredSubcategories = subcategories.filter((s) => {
+    if (!formData.category_id) return true;
+    if (s.category_id === formData.category_id) return true;
+    const cat = formData.category_id.toLowerCase();
+    const sCat = (s.category_id || "").toLowerCase();
+    if (cat.includes("sport") && sCat.includes("sport")) return true;
+    if (cat.includes("box") && sCat.includes("box")) return true;
+    if ((cat.includes("soccer") || cat.includes("football")) && (sCat.includes("soccer") || sCat.includes("football"))) return true;
+    return false;
+  });
 
   if (loading) {
     return <div className="p-8 text-slate-700 font-medium">Loading categories...</div>;

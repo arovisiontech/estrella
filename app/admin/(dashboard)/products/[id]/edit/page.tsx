@@ -38,18 +38,32 @@ export default function EditProductPage() {
   const productId = params.id as string;
   const supabase = createClient();
 
-  const [categories, setCategories] = useState<{ id: string; name: string }[]>([
+  const DEFAULT_ALL_CATEGORIES = [
     { id: "sportswear", name: "Sportswears" },
     { id: "boxing-equipment", name: "Boxing Equipment" },
     { id: "soccer-footballs", name: "Soccer Footballs" },
-    { id: "gloves", name: "Gloves" },
-  ]);
-  const [subcategories, setSubcategories] = useState<{ id: string; name: string; category_id: string }[]>([
-    { id: "long-racing-gloves", name: "Long Racing Gloves", category_id: "gloves" },
-    { id: "basketball-kits", name: "Basketball Kits", category_id: "sportswear" },
+  ];
+
+  const DEFAULT_ALL_SUBCATEGORIES = [
+    // Sportswears (SS 1)
+    { id: "tracksuits", name: "Tracksuits", category_id: "sportswear" },
+    { id: "sublimation-shirts", name: "Sublimation Shirts", category_id: "sportswear" },
+    { id: "hoodies", name: "Hoodies & Sweatshirts", category_id: "sportswear" },
+    { id: "fitness-wear", name: "Gym & Fitness Wear", category_id: "sportswear" },
+    // Boxing Equipment (SS 2)
     { id: "pro-boxing-gloves", name: "Pro Boxing Gloves", category_id: "boxing-equipment" },
+    { id: "focus-pads", name: "Focus Mitts & Target Pads", category_id: "boxing-equipment" },
+    { id: "head-guards", name: "Head Guards & Protection", category_id: "boxing-equipment" },
+    { id: "punching-bags", name: "Punching Bags", category_id: "boxing-equipment" },
+    // Soccer Footballs (SS 3)
     { id: "match-footballs", name: "Official Match Footballs", category_id: "soccer-footballs" },
-  ]);
+    { id: "training-footballs", name: "Training Footballs", category_id: "soccer-footballs" },
+    { id: "futsal-balls", name: "Futsal Balls", category_id: "soccer-footballs" },
+    { id: "sublimated-footballs", name: "Sublimated Footballs", category_id: "soccer-footballs" },
+  ];
+
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>(DEFAULT_ALL_CATEGORIES);
+  const [subcategories, setSubcategories] = useState<{ id: string; name: string; category_id: string }[]>(DEFAULT_ALL_SUBCATEGORIES);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingMain, setUploadingMain] = useState(false);
@@ -94,8 +108,25 @@ export default function EditProductPage() {
         supabase.from("subcategories").select("id, name, category_id").order("sort_order", { ascending: true }),
       ]);
 
-      if (catsRes.data && catsRes.data.length > 0) setCategories(catsRes.data);
-      if (subcatsRes.data && subcatsRes.data.length > 0) setSubcategories(subcatsRes.data);
+      const mergedCats = [...DEFAULT_ALL_CATEGORIES];
+      if (catsRes.data && catsRes.data.length > 0) {
+        catsRes.data.forEach((c) => {
+          if (!mergedCats.some((mc) => mc.id === c.id || mc.name.toLowerCase() === c.name.toLowerCase())) {
+            mergedCats.push(c);
+          }
+        });
+      }
+      setCategories(mergedCats);
+
+      const mergedSubcats = [...DEFAULT_ALL_SUBCATEGORIES];
+      if (subcatsRes.data && subcatsRes.data.length > 0) {
+        subcatsRes.data.forEach((s) => {
+          if (!mergedSubcats.some((ms) => ms.id === s.id || ms.name.toLowerCase() === s.name.toLowerCase())) {
+            mergedSubcats.push(s);
+          }
+        });
+      }
+      setSubcategories(mergedSubcats);
 
       let p: any = null;
 
@@ -126,13 +157,20 @@ export default function EditProductPage() {
         );
 
         if (defMatch) {
+          const matchedSub = DEFAULT_ALL_SUBCATEGORIES.find(
+            (s) =>
+              s.name.toLowerCase() === (defMatch.subcategory || "").toLowerCase() ||
+              s.id.toLowerCase() === (defMatch.subcategory || "").toLowerCase()
+          );
+
           p = {
             id: defMatch.id,
             name: defMatch.name,
             slug: defMatch.slug,
             sku: defMatch.sku,
             category_id: defMatch.category || "sportswear",
-            subcategory_id: null,
+            subcategory_id: matchedSub?.id || defMatch.subcategory || null,
+            subcategory: defMatch.subcategory || matchedSub?.name || "",
             price: defMatch.price,
             sale_price: defMatch.salePrice || null,
             currency: defMatch.currency || "PKR",
@@ -145,9 +183,9 @@ export default function EditProductPage() {
             is_published: true,
             is_featured: Boolean(defMatch.isFeatured),
             is_new: Boolean(defMatch.isNew),
-            stock_quantity: 46,
+            stock_quantity: 100,
             colors: ["Red", "Green", "Blue", "Black"],
-            sizes: ["Small Left", "Medium Right", "Large Left"],
+            sizes: ["Small", "Medium", "Large", "XL"],
             features: defMatch.description,
           };
         } else {
@@ -157,13 +195,13 @@ export default function EditProductPage() {
             name: "CARBON TECH 2",
             slug: "carbon-tech-2",
             sku: "01",
-            category_id: "gloves",
-            subcategory_id: "long-racing-gloves",
+            category_id: "sportswear",
+            subcategory_id: "fitness-wear",
             price: 8500,
             sale_price: 6800,
             currency: "PKR",
             short_description: "Brief summary of product features...",
-            description: "<h3>DESCRIPTION</h3><p>This is a high-performance motorcycle glove built for protection, precision, and durability. It integrates advanced materials and ergonomic engineering to enhance rider safety and control during aggressive or long-distance riding.</p>",
+            description: "<h3>DESCRIPTION</h3><p>This is a high-performance sports product built for protection, precision, and durability. It integrates advanced materials and ergonomic engineering to enhance athlete safety and control.</p>",
             main_image_url: "/images/about/gallery-4.jpg",
             hover_image_url: "/images/about/gallery-4.jpg",
             gallery_images: ["/images/about/gallery-4.jpg", "/images/about/gallery-4.jpg"],
@@ -173,7 +211,7 @@ export default function EditProductPage() {
             is_new: false,
             stock_quantity: 46,
             colors: ["Red", "Green", "Blue", "Black"],
-            sizes: ["Small Left", "Medium Right", "Large Left"],
+            sizes: ["Small", "Medium", "Large", "XL"],
           };
         }
       }
@@ -356,6 +394,9 @@ export default function EditProductPage() {
         hoverImage: formData.hover_image_url ? { src: formData.hover_image_url, alt: formData.name } : null,
       };
 
+      const selectedSubObj = subcategories.find((s) => s.id === formData.subcategory_id);
+      const subcategoryName = selectedSubObj ? selectedSubObj.name : (formData.subcategory_id || "");
+
       const fullSavedRecord = {
         id: productId,
         name: formData.name,
@@ -364,6 +405,7 @@ export default function EditProductPage() {
         category_id: formData.category_id,
         category: formData.category_id,
         subcategory_id: formData.subcategory_id || null,
+        subcategory: subcategoryName,
         price: Number(formData.price),
         sale_price: formData.sale_price ? Number(formData.sale_price) : null,
         currency: formData.currency,
@@ -381,7 +423,7 @@ export default function EditProductPage() {
         colors: formData.colors,
         sizes: formData.sizes,
         features: formData.features_text,
-        source_data: updatedSourceData,
+        source_data: { ...updatedSourceData, subcategory: subcategoryName },
       };
 
       // Instantly save to client storage so refresh NEVER reverts
@@ -408,7 +450,7 @@ export default function EditProductPage() {
         is_new: formData.is_new,
         stock_quantity: Number(formData.stock_quantity),
         sort_order: Number(formData.sort_order),
-        source_data: updatedSourceData,
+        source_data: { ...updatedSourceData, subcategory: subcategoryName },
       });
 
       if (res.success) {
@@ -444,9 +486,16 @@ export default function EditProductPage() {
     }
   };
 
-  const filteredSubcategories = subcategories.filter(
-    (s) => s.category_id === formData.category_id
-  );
+  const filteredSubcategories = subcategories.filter((s) => {
+    if (!formData.category_id) return true;
+    if (s.category_id === formData.category_id) return true;
+    const cat = formData.category_id.toLowerCase();
+    const sCat = (s.category_id || "").toLowerCase();
+    if (cat.includes("sport") && sCat.includes("sport")) return true;
+    if (cat.includes("box") && sCat.includes("box")) return true;
+    if ((cat.includes("soccer") || cat.includes("football")) && (sCat.includes("soccer") || sCat.includes("football"))) return true;
+    return false;
+  });
 
   if (loading) {
     return <div className="p-8 text-slate-700 font-medium">Loading product details...</div>;

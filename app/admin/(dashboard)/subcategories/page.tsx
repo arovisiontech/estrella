@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Plus, Edit2, Trash2, Search } from 'lucide-react';
 
 import { DEFAULT_CATEGORIES } from '@/lib/cms/defaultCategories';
-import { getStoredSubcategories, deleteStoredSubcategory } from '@/lib/cms/clientStorage';
+import { getStoredSubcategories, saveStoredSubcategory, deleteStoredSubcategory } from '@/lib/cms/clientStorage';
 
 interface Subcategory {
   id: string;
@@ -99,7 +99,11 @@ export default function SubcategoriesPage() {
   );
 
   async function toggleActive(id: string, isActive: boolean) {
-    const { error } = await supabase
+    const target = subcategories.find((s) => s.id === id);
+    if (target) {
+      saveStoredSubcategory({ ...target, is_active: !isActive });
+    }
+    await supabase
       .from('subcategories')
       .update({ is_active: !isActive })
       .eq('id', id);

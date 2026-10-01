@@ -1,7 +1,9 @@
 import type { AdaptedProduct } from "./types";
 
 export const DEFAULT_PRODUCTS: AdaptedProduct[] = [
-  // SPORTSWEARS
+  // ==========================================
+  // SPORTSWEARS (4 Subcategories)
+  // ==========================================
   {
     id: "prod-sp-1",
     name: "Custom Sublimation Basketball Uniform Kit",
@@ -16,8 +18,8 @@ export const DEFAULT_PRODUCTS: AdaptedProduct[] = [
     hoverImage: { src: "/images/about/gallery-2.jpg", alt: "Basketball Kit Detail" },
     category: "sportswear",
     categoryLabel: "Sportswears",
-    subcategory: "Basketball Kits",
-    tags: ["Sublimation", "Custom"],
+    subcategory: "Gym & Fitness Wear",
+    tags: ["Sublimation", "Custom", "Basketball"],
     isNew: true,
     isFeatured: true,
     isActive: true,
@@ -55,7 +57,7 @@ export const DEFAULT_PRODUCTS: AdaptedProduct[] = [
     category: "sportswear",
     categoryLabel: "Sportswears",
     subcategory: "Sublimation Shirts",
-    tags: ["Soccer", "Jersey"],
+    tags: ["Soccer", "Jersey", "Sublimation"],
     isNew: false,
     isFeatured: true,
     isActive: true,
@@ -74,13 +76,15 @@ export const DEFAULT_PRODUCTS: AdaptedProduct[] = [
     category: "sportswear",
     categoryLabel: "Sportswears",
     subcategory: "Hoodies & Sweatshirts",
-    tags: ["Hoodie", "Fleece"],
+    tags: ["Hoodie", "Fleece", "Gym"],
     isNew: false,
     isFeatured: false,
     isActive: true,
   },
 
-  // BOXING EQUIPMENT
+  // ==========================================
+  // BOXING EQUIPMENT (4 Subcategories)
+  // ==========================================
   {
     id: "prod-bx-1",
     name: "Pro Leather Training Boxing Gloves",
@@ -139,8 +143,29 @@ export const DEFAULT_PRODUCTS: AdaptedProduct[] = [
     isFeatured: false,
     isActive: true,
   },
+  {
+    id: "prod-bx-4",
+    name: "Heavy Duty Pro Leather Punching Bag",
+    slug: "heavy-duty-pro-leather-punching-bag",
+    sku: "EST-BX-004",
+    price: 7500,
+    currency: "PKR",
+    shortDescription: "Reinforced 4ft genuine leather hanging heavy punching bag for boxing gyms.",
+    description: "Engineered for maximum impact resistance with heavy-duty steel D-rings and triple-stitched seams.",
+    mainImage: { src: "/images/about/gallery-4.jpg", alt: "Punching Bag" },
+    hoverImage: { src: "/images/about/gallery-4.jpg", alt: "Punching Bag Detail" },
+    category: "boxing-equipment",
+    categoryLabel: "Boxing Equipment",
+    subcategory: "Punching Bags",
+    tags: ["Punching Bag", "Heavy Bag", "Leather"],
+    isNew: true,
+    isFeatured: true,
+    isActive: true,
+  },
 
-  // SOCCER FOOTBALLS
+  // ==========================================
+  // SOCCER FOOTBALLS (4 Subcategories)
+  // ==========================================
   {
     id: "prod-fb-1",
     name: "FIFA Standard Thermo-Bonded Soccer Match Ball",
@@ -196,6 +221,25 @@ export const DEFAULT_PRODUCTS: AdaptedProduct[] = [
     tags: ["Futsal", "Low Bounce"],
     isNew: true,
     isFeatured: false,
+    isActive: true,
+  },
+  {
+    id: "prod-fb-4",
+    name: "High-Definition Custom Sublimated Football",
+    slug: "custom-sublimated-football",
+    sku: "EST-FB-004",
+    price: 3000,
+    currency: "PKR",
+    shortDescription: "Custom printed all-over graphics sublimated promo and club football.",
+    description: "Full-color edge-to-edge custom graphics with high-grade glossy PU cover and durable air-lock valve.",
+    mainImage: { src: "/images/about/gallery-5.jpg", alt: "Sublimated Football" },
+    hoverImage: { src: "/images/about/gallery-5.jpg", alt: "Sublimated Football Detail" },
+    category: "soccer-footballs",
+    categoryLabel: "Soccer Footballs",
+    subcategory: "Sublimated Footballs",
+    tags: ["Sublimated", "Custom Football"],
+    isNew: true,
+    isFeatured: true,
     isActive: true,
   },
 ];

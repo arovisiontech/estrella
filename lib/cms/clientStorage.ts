@@ -205,18 +205,32 @@ export function deleteStoredProducts(ids: string[]): void {
 
 // ----------------------------------------------------
 // Subcategories Storage
-// ----------------------------------------------------
+export const DEFAULT_SUBCATEGORIES_FLAT = DEFAULT_CATEGORIES.flatMap((c) =>
+  (c.subcategories || []).map((s) => ({
+    ...s,
+    category_id: c.id,
+    category_slug: c.slug,
+    category_name: c.name,
+  }))
+);
 
 export function getStoredSubcategories(): any[] {
-  if (!isBrowser()) return [];
+  if (!isBrowser()) return DEFAULT_SUBCATEGORIES_FLAT;
   try {
     const raw = localStorage.getItem(SUBCATEGORIES_KEY);
-    if (!raw) return [];
+    if (!raw) return DEFAULT_SUBCATEGORIES_FLAT;
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    if (!Array.isArray(parsed) || parsed.length === 0) return DEFAULT_SUBCATEGORIES_FLAT;
+
+    const storedIds = new Set(parsed.map((s) => s.id));
+    const storedSlugs = new Set(parsed.map((s) => s.slug));
+    const nonOverridden = DEFAULT_SUBCATEGORIES_FLAT.filter(
+      (ds) => !storedIds.has(ds.id) && !storedSlugs.has(ds.slug)
+    );
+    return [...parsed, ...nonOverridden];
   } catch (e) {
     console.error("Error reading stored subcategories:", e);
-    return [];
+    return DEFAULT_SUBCATEGORIES_FLAT;
   }
 }
 
@@ -225,7 +239,7 @@ export function saveStoredSubcategory(subcategory: any): void {
   try {
     const all = getStoredSubcategories();
     const id = subcategory.id || `subcat-${Date.now()}`;
-    const existingIndex = all.findIndex((s) => s.id === id);
+    const existingIndex = all.findIndex((s) => s.id === id || (subcategory.slug && s.slug === subcategory.slug));
 
     const updated = { ...subcategory, id, updated_at: new Date().toISOString() };
     let updatedList: any[];
@@ -247,10 +261,11 @@ export function deleteStoredSubcategory(id: string): void {
   if (!isBrowser()) return;
   try {
     const all = getStoredSubcategories();
-    const filtered = all.filter((s) => s.id !== id);
+    const filtered = all.filter((s) => s.id !== id && s.slug !== id);
     localStorage.setItem(SUBCATEGORIES_KEY, JSON.stringify(filtered));
     window.dispatchEvent(new Event("estrella_subcategories_updated"));
   } catch (e) {
     console.error("Error deleting stored subcategory:", e);
   }
 }
+
