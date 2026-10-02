@@ -1,9 +1,9 @@
 import { DEFAULT_CATEGORIES } from "./defaultCategories";
 import { DEFAULT_PRODUCTS } from "./defaultProducts";
 
-const CATEGORIES_KEY = "estrella_admin_categories_v2";
-const PRODUCTS_KEY = "estrella_admin_products_v2";
-const SUBCATEGORIES_KEY = "estrella_admin_subcategories_v2";
+const CATEGORIES_KEY = "estrella_admin_categories_v3";
+const PRODUCTS_KEY = "estrella_admin_products_v3";
+const SUBCATEGORIES_KEY = "estrella_admin_subcategories_v3";
 
 function isBrowser(): boolean {
   return typeof window !== "undefined" && typeof window.localStorage !== "undefined";

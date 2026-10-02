@@ -96,6 +96,7 @@ export default function ProductImageSwitcher({
             src={safeMain.src}
             alt={safeMain.alt || name || "Product image"}
             fill
+            unoptimized
             priority={priority}
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
             className={cn(
@@ -117,6 +118,7 @@ export default function ProductImageSwitcher({
               src={safeHover.src}
               alt={safeHover.alt || name || "Product hover image"}
               fill
+              unoptimized
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
               className={cn(
                 "object-cover transition-transform duration-700 ease-out",
@@ -143,6 +145,7 @@ export default function ProductImageSwitcher({
                 src={thumb.src}
                 alt={thumb.alt || ""}
                 fill
+                unoptimized
                 sizes="48px"
                 className="object-cover"
               />
@@ -159,6 +162,7 @@ export default function ProductImageSwitcher({
                 src={nextThumb.src}
                 alt=""
                 fill
+                unoptimized
                 sizes="48px"
                 className="object-cover opacity-40"
               />

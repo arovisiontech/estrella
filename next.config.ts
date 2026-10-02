@@ -7,7 +7,23 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
+    unoptimized: true,
     remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "estrella.graphixals.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "**.graphixals.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "**.brandiedesign.agency",
+        pathname: "/**",
+      },
       {
         protocol: "https",
         hostname: "**.supabase.co",

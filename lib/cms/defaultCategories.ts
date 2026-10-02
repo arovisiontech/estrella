@@ -161,15 +161,6 @@ export const DEFAULT_CATEGORIES: CategoryData[] = [
         "is_active": true
       },
       {
-        "id": "sub-hand-rap",
-        "wp_id": 162,
-        "name": "Hand RAP",
-        "slug": "hand-rap",
-        "category_id": "cat-boxing-equipment",
-        "sort_order": 5,
-        "is_active": true
-      },
-      {
         "id": "sub-hand-wraps",
         "wp_id": 163,
         "name": "Hand Wraps",
