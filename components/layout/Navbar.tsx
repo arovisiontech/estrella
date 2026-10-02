@@ -126,16 +126,16 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-[100] bg-white border-b border-slate-200 shadow-xs w-full">
-      <div className="site-container h-18 sm:h-20 lg:h-22 flex items-center justify-between gap-2 xl:gap-4 px-4 sm:px-6 lg:px-8">
+      <div className="site-container h-18 sm:h-20 flex items-center justify-between gap-1 xl:gap-2 2xl:gap-4 px-3 sm:px-6 lg:px-8">
 
-        {/* Left: Logo */}
-        <div className="flex items-center shrink-0">
+        {/* Left: Logo (Protected with shrink-0 and margin) */}
+        <div className="flex items-center shrink-0 z-10 bg-white relative mr-2 2xl:mr-4">
           <Link href="/" className="flex items-center py-1">
             <Image
               src="/images/estrella-logo.png"
               alt="Estrella International"
-              width={160}
-              height={36}
+              width={150}
+              height={32}
               className="h-6 sm:h-7 lg:h-8 w-auto object-contain max-h-8"
               priority
               unoptimized
@@ -143,8 +143,8 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Center: Navigation Menu Buttons */}
-        <nav className="hidden lg:flex items-center justify-center gap-1 lg:gap-1.5 xl:gap-3 flex-1 min-w-0 px-1">
+        {/* Center: Navigation Menu Buttons (Only active from xl screen >= 1280px to guarantee zero overlap) */}
+        <nav className="hidden xl:flex items-center justify-center gap-0.5 2xl:gap-2 flex-1 min-w-0 px-1">
           {navItems.map((item) => {
             const hasSubmenu = Boolean(item.isDepartments || (item.subcategories && item.subcategories.length > 0));
             const isOpen = activeDropdown === item.label;
@@ -159,14 +159,14 @@ export default function Navbar() {
                 >
                   <Link
                     href={item.href}
-                    className={`text-[11px] lg:text-[12px] xl:text-[13px] font-bold tracking-tight xl:tracking-wide whitespace-nowrap transition-colors duration-200 flex items-center gap-1 px-1.5 xl:px-2 py-2 ${
+                    className={`text-[12px] 2xl:text-[13px] font-bold tracking-tight whitespace-nowrap transition-colors duration-200 flex items-center gap-0.5 px-1.5 2xl:px-2 py-1.5 ${
                       isActive(item.href)
                         ? "text-[#00AEF0]"
                         : "text-slate-800 hover:text-[#00AEF0]"
                     }`}
                   >
                     <span>{item.label}</span>
-                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpen ? "rotate-180 text-[#00AEF0]" : "text-slate-400"}`} />
+                    <ChevronDown className={`w-3 h-3 transition-transform duration-200 shrink-0 ${isOpen ? "rotate-180 text-[#00AEF0]" : "text-slate-400"}`} />
                   </Link>
 
                   {/* Dropdown Submenu */}
@@ -215,7 +215,7 @@ export default function Navbar() {
               <Link
                 key={item.label}
                 href={item.href}
-                className={`text-[11px] lg:text-[12px] xl:text-[13px] font-bold tracking-tight xl:tracking-wide whitespace-nowrap transition-colors duration-200 px-1.5 xl:px-2 py-2 ${
+                className={`text-[12px] 2xl:text-[13px] font-bold tracking-tight whitespace-nowrap transition-colors duration-200 px-1.5 2xl:px-2 py-1.5 ${
                   isActive(item.href)
                     ? "text-[#00AEF0]"
                     : "text-slate-800 hover:text-[#00AEF0]"
@@ -228,7 +228,7 @@ export default function Navbar() {
         </nav>
 
         {/* Right: Action Buttons (Search, Cart, Catalogue Button) */}
-        <div className="hidden lg:flex items-center justify-end gap-1.5 lg:gap-2 xl:gap-3 shrink-0">
+        <div className="hidden xl:flex items-center justify-end gap-1.5 2xl:gap-3 shrink-0 z-10 bg-white relative ml-2 2xl:ml-4">
           <button
             onClick={() => setSearchModalOpen(true)}
             className="text-slate-700 hover:text-[#00AEF0] transition p-1.5 rounded-full hover:bg-slate-100 cursor-pointer"
@@ -251,21 +251,21 @@ export default function Navbar() {
           {/* Cyan Catalogue Pill Button */}
           <Link
             href="/catalogue"
-            className="rounded-full bg-[#00AEF0] px-3.5 xl:px-4 py-2 text-[11px] xl:text-xs font-bold text-white shadow-md shadow-sky-500/20 transition-all duration-300 hover:bg-[#0095ce] hover:shadow-sky-500/40 flex items-center gap-1 whitespace-nowrap"
+            className="rounded-full bg-[#00AEF0] px-3 2xl:px-4 py-1.5 2xl:py-2 text-[11px] 2xl:text-xs font-bold text-white shadow-md shadow-sky-500/20 transition-all duration-300 hover:bg-[#0095ce] hover:shadow-sky-500/40 flex items-center gap-1 whitespace-nowrap"
           >
             <span>Catalogue</span>
-            <ArrowRight size={14} />
+            <ArrowRight size={13} />
           </Link>
         </div>
 
-        {/* Mobile Header Toggle Actions */}
-        <div className="flex lg:hidden items-center gap-3">
+        {/* Mobile / Tablet Header Toggle Actions (Active below xl < 1280px) */}
+        <div className="flex xl:hidden items-center gap-2 sm:gap-3">
           <button
             onClick={() => setSearchModalOpen(true)}
             className="text-slate-800 hover:text-[#00AEF0] transition p-1.5"
             aria-label="Search"
           >
-            <Search size={22} />
+            <Search size={20} />
           </button>
 
           <Link
@@ -273,7 +273,7 @@ export default function Navbar() {
             className="relative text-slate-800 hover:text-[#00AEF0] transition p-1.5"
             aria-label="Cart"
           >
-            <ShoppingBag size={22} />
+            <ShoppingBag size={20} />
             <span className="absolute -right-1 -top-1 h-4 w-4 rounded-full bg-[#00AEF0] text-[9px] font-bold flex items-center justify-center text-white">
               {itemCount}
             </span>
@@ -281,18 +281,18 @@ export default function Navbar() {
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="text-slate-800 p-1.5 rounded-lg hover:bg-slate-100"
+            className="text-slate-800 p-1.5 rounded-lg hover:bg-slate-100 cursor-pointer"
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
           >
-            {mobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
 
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile / Tablet Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-t border-slate-200 max-h-[calc(100vh-80px)] overflow-y-auto shadow-xl">
+        <div className="xl:hidden bg-white border-t border-slate-200 max-h-[calc(100vh-80px)] overflow-y-auto shadow-xl">
           <div className="site-container py-4 flex flex-col gap-1">
             {navItems.map((item) => {
               const hasSubmenu = Boolean(item.isDepartments || (item.subcategories && item.subcategories.length > 0));
