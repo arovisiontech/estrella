@@ -3,6 +3,7 @@ export interface SubcategoryData {
   category_id: string;
   name: string;
   slug: string;
+  wp_id?: number;
   description?: string | null;
   image_url?: string | null;
   banner_url?: string | null;
@@ -15,6 +16,7 @@ export interface CategoryData {
   id: string;
   name: string;
   slug: string;
+  wp_id?: number;
   description: string | null;
   image?: {
     src: string;
@@ -43,6 +45,7 @@ export interface AdaptedProduct {
   category: string;
   categoryLabel?: string;
   subcategory?: string;
+  subcategory_id?: string;
   tags?: string[];
   mainImage: {
     src: string;

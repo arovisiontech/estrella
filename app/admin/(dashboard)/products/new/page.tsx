@@ -10,6 +10,7 @@ import { uploadAdminFile } from "@/lib/actions/admin/upload";
 import { createProduct } from "@/lib/actions/admin/products";
 import RichTextEditor from "@/components/admin/RichTextEditor";
 import { saveStoredProduct } from "@/lib/cms/clientStorage";
+import { DEFAULT_CATEGORIES } from "@/lib/cms/defaultCategories";
 
 function getImageUrlStr(img: any): string {
   if (!img) return "";
@@ -24,29 +25,18 @@ export default function NewProductPage() {
   const router = useRouter();
   const supabase = createClient();
 
-  const DEFAULT_ALL_CATEGORIES = [
-    { id: "sportswear", name: "Sportswears" },
-    { id: "boxing-equipment", name: "Boxing Equipment" },
-    { id: "soccer-footballs", name: "Soccer Footballs" },
-  ];
+  const DEFAULT_ALL_CATEGORIES = DEFAULT_CATEGORIES.map((c) => ({
+    id: c.slug,
+    name: c.name,
+  }));
 
-  const DEFAULT_ALL_SUBCATEGORIES = [
-    // Sportswears (SS 1)
-    { id: "tracksuits", name: "Tracksuits", category_id: "sportswear" },
-    { id: "sublimation-shirts", name: "Sublimation Shirts", category_id: "sportswear" },
-    { id: "hoodies", name: "Hoodies & Sweatshirts", category_id: "sportswear" },
-    { id: "fitness-wear", name: "Gym & Fitness Wear", category_id: "sportswear" },
-    // Boxing Equipment (SS 2)
-    { id: "pro-boxing-gloves", name: "Pro Boxing Gloves", category_id: "boxing-equipment" },
-    { id: "focus-pads", name: "Focus Mitts & Target Pads", category_id: "boxing-equipment" },
-    { id: "head-guards", name: "Head Guards & Protection", category_id: "boxing-equipment" },
-    { id: "punching-bags", name: "Punching Bags", category_id: "boxing-equipment" },
-    // Soccer Footballs (SS 3)
-    { id: "match-footballs", name: "Official Match Footballs", category_id: "soccer-footballs" },
-    { id: "training-footballs", name: "Training Footballs", category_id: "soccer-footballs" },
-    { id: "futsal-balls", name: "Futsal Balls", category_id: "soccer-footballs" },
-    { id: "sublimated-footballs", name: "Sublimated Footballs", category_id: "soccer-footballs" },
-  ];
+  const DEFAULT_ALL_SUBCATEGORIES = DEFAULT_CATEGORIES.flatMap((c) =>
+    (c.subcategories || []).map((sub) => ({
+      id: sub.slug,
+      name: sub.name,
+      category_id: c.slug,
+    }))
+  );
 
   const [categories, setCategories] = useState<{ id: string; name: string }[]>(DEFAULT_ALL_CATEGORIES);
   const [subcategories, setSubcategories] = useState<{ id: string; name: string; category_id: string }[]>(DEFAULT_ALL_SUBCATEGORIES);

@@ -80,11 +80,14 @@ export default function EditCategoryPage() {
           saveStoredCategory(loaded);
         } else if (!localMatch) {
           // Check fallback from DEFAULT_CATEGORIES
+          const stripped = categoryId.toLowerCase().replace(/^cat-/, '').replace(/s$/, '');
           const defMatch = DEFAULT_CATEGORIES.find(
             (c) =>
               c.id === categoryId ||
               c.slug === categoryId ||
-              c.name.toLowerCase() === categoryId.toLowerCase()
+              c.name.toLowerCase() === categoryId.toLowerCase() ||
+              c.slug.toLowerCase().replace(/s$/, '') === stripped ||
+              c.id.toLowerCase().replace(/^cat-/, '').replace(/s$/, '') === stripped
           );
 
           if (defMatch) {
@@ -107,11 +110,14 @@ export default function EditCategoryPage() {
       } catch (err) {
         console.error('Error loading category:', err);
         if (!localMatch) {
+          const stripped = categoryId.toLowerCase().replace(/^cat-/, '').replace(/s$/, '');
           const defMatch = DEFAULT_CATEGORIES.find(
             (c) =>
               c.id === categoryId ||
               c.slug === categoryId ||
-              c.name.toLowerCase() === categoryId.toLowerCase()
+              c.name.toLowerCase() === categoryId.toLowerCase() ||
+              c.slug.toLowerCase().replace(/s$/, '') === stripped ||
+              c.id.toLowerCase().replace(/^cat-/, '').replace(/s$/, '') === stripped
           );
           if (defMatch) {
             setCategory({

@@ -88,16 +88,23 @@ export async function getFeaturedProducts(): Promise<AdaptedProduct[]> {
 
 export async function getProductsByCategorySlug(categorySlug: string): Promise<AdaptedProduct[]> {
   const normSlug = categorySlug.trim().toLowerCase();
+  const strippedSlug = normSlug.replace(/-/g, "").replace(/s$/, "");
   const allLocal = getLocalProducts();
-  const defaultMatches = allLocal.filter(
-    (p) =>
-      p.category === normSlug ||
-      p.category.replace(/-/g, "") === normSlug.replace(/-/g, "") ||
-      (normSlug.includes("sport") && p.category === "sportswear") ||
-      (normSlug.includes("box") && p.category === "boxing-equipment") ||
-      (normSlug.includes("soccer") && p.category === "soccer-footballs") ||
-      (normSlug.includes("ball") && p.category === "soccer-footballs")
-  );
+  const defaultMatches = allLocal.filter((p) => {
+    const pCat = (p.category || "").toLowerCase();
+    const pStripped = pCat.replace(/-/g, "").replace(/s$/, "");
+    return (
+      pCat === normSlug ||
+      pCat.replace(/-/g, "") === normSlug.replace(/-/g, "") ||
+      pStripped === strippedSlug ||
+      (normSlug.includes("sport") && pCat.includes("sport")) ||
+      (normSlug.includes("box") && pCat.includes("box")) ||
+      (normSlug.includes("soccer") && pCat.includes("soccer")) ||
+      (normSlug.includes("football") && (pCat.includes("football") || pCat.includes("soccer"))) ||
+      (normSlug.includes("casual") && pCat.includes("casual")) ||
+      (normSlug.includes("active") && pCat.includes("active"))
+    );
+  });
 
   const fetchFn = async () => {
     const isConfigured = Boolean(
@@ -114,11 +121,20 @@ export async function getProductsByCategorySlug(categorySlug: string): Promise<A
 
     if (!cat) return defaultMatches;
 
-    const matchedCat = cat.find(
-      (c: any) =>
-        c.slug.trim().toLowerCase() === normSlug ||
-        c.slug.trim().toLowerCase().replace(/-/g, "") === normSlug.replace(/-/g, "")
-    );
+    const matchedCat = cat.find((c: any) => {
+      const cSlug = (c.slug || "").trim().toLowerCase();
+      const cStripped = cSlug.replace(/-/g, "").replace(/s$/, "");
+      return (
+        cSlug === normSlug ||
+        cSlug.replace(/-/g, "") === normSlug.replace(/-/g, "") ||
+        cStripped === strippedSlug ||
+        (normSlug.includes("sport") && cSlug.includes("sport")) ||
+        (normSlug.includes("box") && cSlug.includes("box")) ||
+        (normSlug.includes("soccer") && cSlug.includes("soccer")) ||
+        (normSlug.includes("casual") && cSlug.includes("casual")) ||
+        (normSlug.includes("active") && cSlug.includes("active"))
+      );
+    });
 
     if (!matchedCat) return defaultMatches;
 

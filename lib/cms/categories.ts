@@ -65,12 +65,14 @@ export async function getCategories(): Promise<CategoryData[]> {
 
 export async function getCategoryBySlug(slug: string): Promise<CategoryData | null> {
   const normSlug = slug.trim().toLowerCase();
+  const strippedSlug = normSlug.replace(/-/g, "").replace(/s$/, "");
   const allLocal = getLocalCategories();
   const defaultMatch = allLocal.find(
     (c) =>
       c.slug === normSlug ||
       c.name.toLowerCase() === normSlug ||
-      c.slug.replace(/-/g, "") === normSlug.replace(/-/g, "")
+      c.slug.replace(/-/g, "") === normSlug.replace(/-/g, "") ||
+      c.slug.replace(/-/g, "").replace(/s$/, "") === strippedSlug
   );
 
   const fetchFn = async () => {
@@ -92,7 +94,8 @@ export async function getCategoryBySlug(slug: string): Promise<CategoryData | nu
       (c: any) =>
         c.slug.trim().toLowerCase() === normSlug ||
         c.name.trim().toLowerCase() === normSlug ||
-        c.slug.trim().toLowerCase().replace(/-/g, "") === normSlug.replace(/-/g, "")
+        c.slug.trim().toLowerCase().replace(/-/g, "") === normSlug.replace(/-/g, "") ||
+        c.slug.trim().toLowerCase().replace(/-/g, "").replace(/s$/, "") === strippedSlug
     );
 
     if (!matched) return defaultMatch || null;

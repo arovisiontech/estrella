@@ -1,9 +1,9 @@
 import { DEFAULT_CATEGORIES } from "./defaultCategories";
 import { DEFAULT_PRODUCTS } from "./defaultProducts";
 
-const CATEGORIES_KEY = "estrella_admin_categories";
-const PRODUCTS_KEY = "estrella_admin_products";
-const SUBCATEGORIES_KEY = "estrella_admin_subcategories";
+const CATEGORIES_KEY = "estrella_admin_categories_v2";
+const PRODUCTS_KEY = "estrella_admin_products_v2";
+const SUBCATEGORIES_KEY = "estrella_admin_subcategories_v2";
 
 function isBrowser(): boolean {
   return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
@@ -37,13 +37,16 @@ export function getStoredCategories(): any[] {
 export function getStoredCategoryById(idOrSlug: string): any | null {
   const all = getStoredCategories();
   const normalized = idOrSlug.trim().toLowerCase();
+  const stripped = normalized.replace(/^cat-/, "").replace(/s$/, "");
   return (
     all.find(
       (c) =>
         c.id === idOrSlug ||
         c.slug === normalized ||
         c.id?.toLowerCase() === normalized ||
-        c.name?.toLowerCase() === normalized
+        c.name?.toLowerCase() === normalized ||
+        c.slug?.toLowerCase().replace(/s$/, "") === stripped ||
+        c.id?.toLowerCase().replace(/^cat-/, "").replace(/s$/, "") === stripped
     ) || null
   );
 }

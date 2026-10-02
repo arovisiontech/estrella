@@ -65,12 +65,14 @@ export default function Navbar() {
     }, 200);
   };
 
-  // Helper to build subcategories for 3 main categories
+  // Helper to build subcategories for WordPress categories
   const getSubcategoriesForCategory = (catSlug: string): SubmenuItem[] => {
+    const norm = catSlug.toLowerCase().replace(/s$/, "");
     const matchedCat = categoriesData.find(
       (c) =>
         c.slug.toLowerCase() === catSlug.toLowerCase() ||
-        c.name.toLowerCase().includes(catSlug.replace("-equipment", "").replace("-footballs", ""))
+        c.slug.toLowerCase().replace(/s$/, "") === norm ||
+        c.name.toLowerCase().includes(norm.replace("-equipment", "").replace("-footballs", "").replace("-wear", ""))
     );
 
     if (matchedCat && matchedCat.subcategories && matchedCat.subcategories.length > 0) {
@@ -83,34 +85,6 @@ export default function Navbar() {
       ];
     }
 
-    // Default Fallbacks
-    if (catSlug === "sportswear") {
-      return [
-        { name: "All Sportswears", href: "/categories/sportswear" },
-        { name: "Tracksuits", href: "/categories/sportswear?subcategory=tracksuits" },
-        { name: "Sublimation Shirts", href: "/categories/sportswear?subcategory=sublimation-shirts" },
-        { name: "Hoodies & Sweatshirts", href: "/categories/sportswear?subcategory=hoodies" },
-        { name: "Gym & Fitness Wear", href: "/categories/sportswear?subcategory=fitness-wear" },
-      ];
-    }
-    if (catSlug === "boxing-equipment") {
-      return [
-        { name: "All Boxing Equipment", href: "/categories/boxing-equipment" },
-        { name: "Pro Boxing Gloves", href: "/categories/boxing-equipment?subcategory=pro-boxing-gloves" },
-        { name: "Focus Mitts & Target Pads", href: "/categories/boxing-equipment?subcategory=focus-pads" },
-        { name: "Head Guards & Protection", href: "/categories/boxing-equipment?subcategory=head-guards" },
-        { name: "Punching Bags", href: "/categories/boxing-equipment?subcategory=punching-bags" },
-      ];
-    }
-    if (catSlug === "soccer-footballs") {
-      return [
-        { name: "All Soccer Footballs", href: "/categories/soccer-footballs" },
-        { name: "Official Match Footballs", href: "/categories/soccer-footballs?subcategory=match-footballs" },
-        { name: "Training Footballs", href: "/categories/soccer-footballs?subcategory=training-footballs" },
-        { name: "Futsal Balls", href: "/categories/soccer-footballs?subcategory=futsal-balls" },
-        { name: "Sublimated Footballs", href: "/categories/soccer-footballs?subcategory=sublimated-footballs" },
-      ];
-    }
     return [];
   };
 
@@ -119,9 +93,9 @@ export default function Navbar() {
     { label: "About Us", href: "/about" },
     {
       label: "Sportswears",
-      href: "/categories/sportswear",
-      slug: "sportswear",
-      subcategories: getSubcategoriesForCategory("sportswear"),
+      href: "/categories/sportswears",
+      slug: "sportswears",
+      subcategories: getSubcategoriesForCategory("sportswears"),
     },
     {
       label: "Boxing Equipment",
@@ -130,16 +104,22 @@ export default function Navbar() {
       subcategories: getSubcategoriesForCategory("boxing-equipment"),
     },
     {
+      label: "Casual Wears",
+      href: "/categories/casual-wears",
+      slug: "casual-wears",
+      subcategories: getSubcategoriesForCategory("casual-wears"),
+    },
+    {
+      label: "Active Wear",
+      href: "/categories/active-wear",
+      slug: "active-wear",
+      subcategories: getSubcategoriesForCategory("active-wear"),
+    },
+    {
       label: "Soccer Footballs",
       href: "/categories/soccer-footballs",
       slug: "soccer-footballs",
       subcategories: getSubcategoriesForCategory("soccer-footballs"),
-    },
-    {
-      label: "Departments",
-      href: "/departments",
-      slug: "departments",
-      isDepartments: true,
     },
     { label: "Contact", href: "/contact" },
   ];
@@ -192,7 +172,7 @@ export default function Navbar() {
                   {/* Dropdown Submenu */}
                   {isOpen && (
                     <div
-                      className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-64 bg-white rounded-2xl shadow-2xl border border-slate-100 z-[99] py-2 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150"
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-64 max-h-80 overflow-y-auto bg-white rounded-2xl shadow-2xl border border-slate-100 z-[99] py-2 animate-in fade-in slide-in-from-top-2 duration-150"
                       onMouseEnter={() => handleMouseEnter(item.label)}
                       onMouseLeave={handleMouseLeave}
                     >

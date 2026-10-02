@@ -34,6 +34,23 @@ type NavSection = {
   items: NavItem[];
 };
 
+import { DEFAULT_CATEGORIES } from "@/lib/cms/defaultCategories";
+
+const productCategoryItems: NavItem[] = [
+  ...DEFAULT_CATEGORIES.map((cat) => ({
+    label: cat.name,
+    href: `/admin/products?category=${cat.slug}`,
+    icon: cat.slug.includes("box") ? FolderOpen : ShoppingBag,
+    children: (cat.subcategories || []).map((sub) => ({
+      label: sub.name,
+      href: `/admin/products?category=${cat.slug}&subcategory=${sub.slug}`,
+    })),
+  })),
+  { label: "All Categories", href: "/admin/categories", icon: FolderOpen },
+  { label: "All Subcategories", href: "/admin/subcategories", icon: FolderOpen },
+  { label: "All Products", href: "/admin/products", icon: ShoppingBag },
+];
+
 const sidebarSections: NavSection[] = [
   {
     title: "HOMEPAGE SECTIONS",
@@ -52,44 +69,7 @@ const sidebarSections: NavSection[] = [
   },
   {
     title: "PRODUCT PAGES",
-    items: [
-      {
-        label: "Sportswears",
-        href: "/admin/products?category=sportswear",
-        icon: ShoppingBag,
-        children: [
-          { label: "Tracksuits", href: "/admin/products?category=sportswear&subcategory=tracksuits" },
-          { label: "Sublimation Shirts", href: "/admin/products?category=sportswear&subcategory=sublimation-shirts" },
-          { label: "Hoodies & Sweatshirts", href: "/admin/products?category=sportswear&subcategory=hoodies" },
-          { label: "Gym & Fitness Wear", href: "/admin/products?category=sportswear&subcategory=fitness-wear" },
-        ],
-      },
-      {
-        label: "Boxing Equipment",
-        href: "/admin/products?category=boxing-equipment",
-        icon: FolderOpen,
-        children: [
-          { label: "Pro Boxing Gloves", href: "/admin/products?category=boxing-equipment&subcategory=pro-boxing-gloves" },
-          { label: "Focus Mitts & Target Pads", href: "/admin/products?category=boxing-equipment&subcategory=focus-pads" },
-          { label: "Head Guards & Protection", href: "/admin/products?category=boxing-equipment&subcategory=head-guards" },
-          { label: "Punching Bags", href: "/admin/products?category=boxing-equipment&subcategory=punching-bags" },
-        ],
-      },
-      {
-        label: "Soccer Footballs",
-        href: "/admin/products?category=soccer-footballs",
-        icon: FolderOpen,
-        children: [
-          { label: "Official Match Footballs", href: "/admin/products?category=soccer-footballs&subcategory=match-footballs" },
-          { label: "Training Footballs", href: "/admin/products?category=soccer-footballs&subcategory=training-footballs" },
-          { label: "Futsal Balls", href: "/admin/products?category=soccer-footballs&subcategory=futsal-balls" },
-          { label: "Sublimated Footballs", href: "/admin/products?category=soccer-footballs&subcategory=sublimated-footballs" },
-        ],
-      },
-      { label: "All Categories", href: "/admin/categories", icon: FolderOpen },
-      { label: "All Subcategories", href: "/admin/subcategories", icon: FolderOpen },
-      { label: "All Products", href: "/admin/products", icon: ShoppingBag },
-    ],
+    items: productCategoryItems,
   },
   {
     title: "PAGES & CONTACT",
