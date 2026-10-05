@@ -137,7 +137,7 @@ export default function ProductGallery({
   return (
     <div>
       <div
-        className="relative aspect-square w-full overflow-hidden rounded-sm bg-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00AEF0]"
+        className="relative aspect-[3/4] sm:aspect-square md:aspect-[3/4] max-h-[580px] w-full overflow-hidden rounded-lg bg-zinc-50 border border-zinc-200/80 shadow-xs focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00AEF0]"
         tabIndex={0}
         role="group"
         aria-label={`${productName} media viewer, item ${safeIndex + 1} of ${media.length}`}
@@ -165,7 +165,7 @@ export default function ProductGallery({
               sizes="(max-width: 1024px) 100vw, 55vw"
               style={{ transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%` }}
               className={cn(
-                "object-contain transition-transform duration-300 ease-out",
+                "object-contain p-2 sm:p-4 transition-transform duration-300 ease-out",
                 isZooming ? "scale-[1.9]" : "scale-100"
               )}
             />
@@ -199,7 +199,7 @@ export default function ProductGallery({
 
       {/* Thumbnail rail — always below the main image */}
       {media.length > 1 && (
-        <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+        <div className="mt-3.5 flex items-center gap-2.5 overflow-x-auto pb-1 pt-1 scrollbar-thin">
           {media.map((item, index) => (
             <GalleryThumb
               key={index}
@@ -247,11 +247,11 @@ function GalleryThumb({ item, index, active, onSelect, productName }: GalleryThu
       }
       aria-current={active}
       className={cn(
-        "relative h-16 w-16 shrink-0 overflow-hidden rounded-sm border transition",
-        active ? "border-[#00AEF0]" : "border-zinc-200 hover:border-zinc-400"
+        "relative h-16 w-16 sm:h-20 sm:w-20 shrink-0 overflow-hidden rounded-md border-2 bg-zinc-50 transition shadow-xs",
+        active ? "border-[#00AEF0] ring-2 ring-[#00AEF0]/30" : "border-zinc-200 hover:border-zinc-400"
       )}
     >
-      <Image src={src || "/images/banner-sublimation-sports.svg"} alt="" fill sizes="64px" className="object-cover" />
+      <Image src={src || "/images/banner-sublimation-sports.svg"} alt="" fill sizes="80px" className="object-contain p-1" />
       {item.type === "video" && (
         <span className="absolute inset-0 flex items-center justify-center bg-black/30">
           <PlayCircle size={20} className="text-white" />

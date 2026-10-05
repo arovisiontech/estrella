@@ -8,13 +8,6 @@ type ProductCardProps = {
   priority?: boolean;
 };
 
-const ALT_HOVER_POOL = [
-  "/images/about/gallery-1.jpg",
-  "/images/about/gallery-2.jpg",
-  "/images/about/gallery-3.jpg",
-  "/images/about/gallery-4.jpg",
-  "/images/about/gallery-5.jpg",
-];
 
 export default function ProductCard({ product, priority = false }: ProductCardProps) {
   if (!product) return null;
@@ -56,7 +49,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
   if (Array.isArray(product.source_data?.galleryImages)) rawThumbsList.push(...product.source_data.galleryImages);
   if (Array.isArray(product.source_data?.highlights)) rawThumbsList.push(...product.source_data.highlights);
 
-  // Guarantee mouse hover image changes if hover image is empty or identical to main image
+  // Use product thumbnail alternate view if available, otherwise keep rawMain (smooth zoom on hover)
   if (!rawHover || rawHover === rawMain) {
     const thumbCandidates = rawThumbsList
       .map(extractSrc)
@@ -64,14 +57,7 @@ export default function ProductCard({ product, priority = false }: ProductCardPr
     if (thumbCandidates.length > 0) {
       rawHover = thumbCandidates[0];
     } else {
-      const hashStr = String(product.id || product.slug || product.name || "");
-      let charSum = 0;
-      for (let i = 0; i < hashStr.length; i++) {
-        charSum += hashStr.charCodeAt(i);
-      }
-      const poolIndex = Math.abs(charSum % ALT_HOVER_POOL.length);
-      const picked = ALT_HOVER_POOL[poolIndex];
-      rawHover = picked !== rawMain ? picked : ALT_HOVER_POOL[(poolIndex + 1) % ALT_HOVER_POOL.length];
+      rawHover = rawMain;
     }
   }
 

@@ -96,12 +96,35 @@ export default async function CategoryPage({
     );
   }
 
-  if (currentSubcategory) {
-    categoryProducts = categoryProducts.filter(
-      (p) =>
-        p.subcategory?.toLowerCase() === currentSubcategory.name.toLowerCase() ||
-        p.subcategory?.toLowerCase() === currentSubcategory.slug.toLowerCase()
+  const matchesSubcategory = (p: any, sub: any) => {
+    if (!p || !sub) return false;
+    const pSub = (p.subcategory || "").trim().toLowerCase();
+    const pSubId = (p.subcategory_id || "").trim().toLowerCase();
+    const sName = (sub.name || "").trim().toLowerCase();
+    const sSlug = (sub.slug || "").trim().toLowerCase();
+    return (
+      pSub === sName ||
+      pSub === sSlug ||
+      pSubId === sSlug ||
+      pSub.replace(/-/g, " ") === sName.replace(/-/g, " ") ||
+      pSub.replace(/[^a-z0-9]/g, "") === sSlug.replace(/[^a-z0-9]/g, "")
     );
+  };
+
+  // Calculate real product counts for subcategory pills BEFORE filtering by selected subcategory
+  const subcategoryPills = activeSubcategories.map((sub) => {
+    const matchingCount = categoryProducts.filter((p) => matchesSubcategory(p, sub)).length;
+
+    return {
+      id: sub.id,
+      name: sub.name,
+      slug: sub.slug,
+      count: matchingCount,
+    };
+  });
+
+  if (currentSubcategory) {
+    categoryProducts = categoryProducts.filter((p) => matchesSubcategory(p, currentSubcategory));
   }
 
   // Apply sorting
@@ -112,22 +135,6 @@ export default async function CategoryPage({
   } else if (sortOption === "name-asc") {
     categoryProducts.sort((a, b) => a.name.localeCompare(b.name));
   }
-
-  // Calculate real product counts for subcategory pills
-  const subcategoryPills = activeSubcategories.map((sub) => {
-    const matchingCount = categoryProducts.filter(
-      (p) =>
-        p.subcategory?.toLowerCase() === sub.name.toLowerCase() ||
-        p.subcategory?.toLowerCase() === sub.slug.toLowerCase()
-    ).length;
-
-    return {
-      id: sub.id,
-      name: sub.name,
-      slug: sub.slug,
-      count: matchingCount || 3,
-    };
-  });
 
   const bannerSrc = categoryData.banner_url || categoryData.image_url || "/images/brochure-parallax.jpeg";
   const bannerAlt = `${categoryData.name} collection`;

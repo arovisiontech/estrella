@@ -83,16 +83,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
       <div className="site-container px-4 sm:px-6 py-8 sm:py-12 lg:py-16">
         <div className="lg:flex lg:items-start lg:gap-12">
-          <div className="lg:w-[58%] xl:w-[60%]">
+          <div className="lg:w-[58%] xl:w-[60%] lg:sticky lg:top-24">
             <ProductGallery
               productName={product.name}
               images={
                 product.galleryImages && product.galleryImages.length > 0
                   ? product.galleryImages
-                  : [
-                      product.mainImage,
-                      product.hoverImage || { src: product.mainImage?.src || "/images/about/gallery-1.jpg", alt: `${product.name} back view` },
-                    ].filter((img) => img && img.src)
+                  : ([product.mainImage, product.hoverImage].filter(Boolean) as any)
               }
               videoUrl={product.videoUrl}
               videoPoster={product.videoPoster ? { src: product.videoPoster, alt: product.name } : undefined}

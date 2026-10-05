@@ -27,6 +27,7 @@ export default function ProductImageSwitcher({
   priority = false,
 }: ProductImageSwitcherProps) {
   const [hovering, setHovering] = useState(false);
+  const [activeThumb, setActiveThumb] = useState<string | null>(null);
 
   const extractSrc = (img: any): string => {
     if (!img) return "/images/banner-sublimation-sports.svg";
@@ -79,7 +80,8 @@ export default function ProductImageSwitcher({
   const extraCount = Math.max(0, safeThumbs.length - MAX_VISIBLE_THUMBS);
   const nextThumb = safeThumbs[MAX_VISIBLE_THUMBS];
 
-  const hasDistinctHover = safeHover.src !== safeMain.src;
+  const currentMainSrc = activeThumb || safeMain.src;
+  const hasDistinctHover = !activeThumb && safeHover.src !== safeMain.src;
 
   return (
     <div>
@@ -93,7 +95,7 @@ export default function ProductImageSwitcher({
         {/* Main Primary Image */}
         <div className="absolute inset-0">
           <Image
-            src={safeMain.src}
+            src={currentMainSrc}
             alt={safeMain.alt || name || "Product image"}
             fill
             unoptimized
@@ -134,28 +136,40 @@ export default function ProductImageSwitcher({
           aria-label={`${name} color options`}
           className="mt-3 flex justify-center gap-2"
         >
-          {visibleThumbs.map((thumb, index) => (
-            <Link
-              key={thumb.src + index}
-              href={href}
-              aria-label={`View ${name}`}
-              className="relative h-10 w-10 shrink-0 overflow-hidden rounded-sm border border-zinc-200 transition hover:border-[#00AEF0] sm:h-12 sm:w-12"
-            >
-              <Image
-                src={thumb.src}
-                alt={thumb.alt || ""}
-                fill
-                unoptimized
-                sizes="48px"
-                className="object-cover"
-              />
-            </Link>
-          ))}
+          {visibleThumbs.map((thumb, index) => {
+            const isSelected = activeThumb === thumb.src || (!activeThumb && thumb.src === safeMain.src);
+            return (
+              <Link
+                key={thumb.src + index}
+                href={href}
+                aria-label={`View ${name}`}
+                onMouseEnter={() => setActiveThumb(thumb.src)}
+                onMouseLeave={() => setActiveThumb(null)}
+                className={cn(
+                  "relative h-10 w-10 shrink-0 overflow-hidden rounded-sm border transition sm:h-12 sm:w-12",
+                  isSelected
+                    ? "border-[#00AEF0] ring-1 ring-[#00AEF0]"
+                    : "border-zinc-200 hover:border-[#00AEF0]"
+                )}
+              >
+                <Image
+                  src={thumb.src}
+                  alt={thumb.alt || ""}
+                  fill
+                  unoptimized
+                  sizes="48px"
+                  className="object-cover"
+                />
+              </Link>
+            );
+          })}
 
           {extraCount > 0 && nextThumb && (
             <Link
               href={href}
               aria-label={`View ${name}, ${extraCount} more color${extraCount > 1 ? "s" : ""}`}
+              onMouseEnter={() => setActiveThumb(nextThumb.src)}
+              onMouseLeave={() => setActiveThumb(null)}
               className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-sm border border-zinc-200 transition hover:border-[#00AEF0] sm:h-12 sm:w-12"
             >
               <Image
