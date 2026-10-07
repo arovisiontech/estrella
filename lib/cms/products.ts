@@ -43,7 +43,19 @@ export async function getProducts(): Promise<AdaptedProduct[]> {
     if (error || !prods) return fallback;
 
     const dbProducts = prods
-      .map((p) => adaptProductFromRow(p))
+      .map((p) => {
+        const defaultMatch = fallback.find(
+          (dp) => dp.id === p.id || dp.slug === p.slug || (dp.sku && dp.sku === p.sku)
+        );
+        const resolvedSub = p.subcategory || defaultMatch?.subcategory;
+        const resolvedSubId = p.subcategory_id || defaultMatch?.subcategory_id;
+        const adapted = adaptProductFromRow(p);
+        if (adapted) {
+          if (resolvedSub) adapted.subcategory = resolvedSub;
+          if (resolvedSubId) adapted.subcategory_id = resolvedSubId;
+        }
+        return adapted;
+      })
       .filter((p): p is AdaptedProduct => p !== null);
 
     // Merge Supabase products with local products (DB takes priority, fallback adds any extra)
@@ -138,18 +150,47 @@ export async function getProductsByCategorySlug(categorySlug: string): Promise<A
 
     if (!matchedCat) return defaultMatches;
 
-    const { data: prods, error } = await supabase
-      .from("products")
-      .select("*")
-      .eq("category_id", matchedCat.id)
-      .eq("is_active", true)
-      .eq("is_published", true)
-      .order("sort_order", { ascending: true });
+    const [prodsRes, subcatsRes] = await Promise.all([
+      supabase
+        .from("products")
+        .select("*")
+        .eq("category_id", matchedCat.id)
+        .eq("is_active", true)
+        .eq("is_published", true)
+        .order("sort_order", { ascending: true }),
+      supabase
+        .from("subcategories")
+        .select("id, name, slug")
+        .eq("category_id", matchedCat.id),
+    ]);
 
-    if (error || !prods || prods.length === 0) return defaultMatches;
+    const prods = prodsRes.data;
+    if (prodsRes.error || !prods || prods.length === 0) return defaultMatches;
+
+    const subcatMap = new Map<string, { id: string; name: string; slug: string }>();
+    if (subcatsRes.data) {
+      for (const sc of subcatsRes.data) {
+        if (sc.id) subcatMap.set(sc.id, sc);
+        if (sc.slug) subcatMap.set(sc.slug, sc);
+      }
+    }
 
     return prods
-      .map((p) => adaptProductFromRow(p, matchedCat.name))
+      .map((p) => {
+        const matchedSub = subcatMap.get(p.subcategory_id);
+        const defaultMatch = defaultMatches.find(
+          (dp) => dp.id === p.id || dp.slug === p.slug || (dp.sku && dp.sku === p.sku)
+        );
+        const resolvedSubName = matchedSub?.name || p.subcategory || defaultMatch?.subcategory;
+        const resolvedSubId = matchedSub?.slug || p.subcategory_id || defaultMatch?.subcategory_id;
+
+        const adapted = adaptProductFromRow(p, matchedCat.name, resolvedSubName);
+        if (adapted) {
+          if (resolvedSubName) adapted.subcategory = resolvedSubName;
+          if (resolvedSubId) adapted.subcategory_id = resolvedSubId;
+        }
+        return adapted;
+      })
       .filter((p): p is AdaptedProduct => p !== null);
   };
 

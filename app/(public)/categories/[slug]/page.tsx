@@ -75,12 +75,20 @@ export default async function CategoryPage({
   let currentSubcategory: any = null;
   if (activeSubcategorySlug) {
     const decodedSubSlug = decodeURIComponent(activeSubcategorySlug).trim().toLowerCase();
-    currentSubcategory = activeSubcategories.find(
-      (s) =>
-        s.slug.trim().toLowerCase() === decodedSubSlug ||
-        s.name.trim().toLowerCase() === decodedSubSlug ||
-        s.slug.trim().toLowerCase().replace(/-/g, "") === decodedSubSlug.replace(/-/g, "")
-    );
+    currentSubcategory = activeSubcategories.find((s) => {
+      const sSlug = s.slug.trim().toLowerCase();
+      const sName = s.name.trim().toLowerCase();
+      const sId = (s.id || "").trim().toLowerCase();
+      const normDecoded = decodedSubSlug.replace(/[^a-z0-9]/g, "");
+      return (
+        sSlug === decodedSubSlug ||
+        sName === decodedSubSlug ||
+        sId === decodedSubSlug ||
+        sSlug.replace(/-/g, "") === decodedSubSlug.replace(/-/g, "") ||
+        sSlug.replace(/[^a-z0-9]/g, "") === normDecoded ||
+        sName.replace(/[^a-z0-9]/g, "") === normDecoded
+      );
+    });
   }
 
   // 4. Products for this category
@@ -98,17 +106,74 @@ export default async function CategoryPage({
 
   const matchesSubcategory = (p: any, sub: any) => {
     if (!p || !sub) return false;
-    const pSub = (p.subcategory || "").trim().toLowerCase();
-    const pSubId = (p.subcategory_id || "").trim().toLowerCase();
     const sName = (sub.name || "").trim().toLowerCase();
     const sSlug = (sub.slug || "").trim().toLowerCase();
-    return (
-      pSub === sName ||
-      pSub === sSlug ||
-      pSubId === sSlug ||
-      pSub.replace(/-/g, " ") === sName.replace(/-/g, " ") ||
-      pSub.replace(/[^a-z0-9]/g, "") === sSlug.replace(/[^a-z0-9]/g, "")
+    const sId = (sub.id || "").trim().toLowerCase();
+
+    const pSub = (p.subcategory || "").trim().toLowerCase();
+    const pSubId = (p.subcategory_id || "").trim().toLowerCase();
+    const pName = (p.name || "").trim().toLowerCase();
+    const pSlug = (p.slug || "").trim().toLowerCase();
+
+    // 1. Direct ID match (e.g. UUID from Supabase)
+    if (sId && (pSubId === sId || pSub === sId)) return true;
+
+    // 2. Direct name or slug match
+    if (pSub && (pSub === sName || pSub === sSlug || pSubId === sSlug || pSubId === sName)) return true;
+
+    // 3. Alphanumeric normalized match
+    const normSub = sName.replace(/[^a-z0-9]/g, "");
+    const normSlug = sSlug.replace(/[^a-z0-9]/g, "");
+    const normPSub = pSub.replace(/[^a-z0-9]/g, "");
+    const normPSubId = pSubId.replace(/[^a-z0-9]/g, "");
+    if (normPSub && (normPSub === normSub || normPSub === normSlug)) return true;
+    if (normPSubId && (normPSubId === normSub || normPSubId === normSlug)) return true;
+
+    // 4. Fallback matching against DEFAULT_PRODUCTS
+    const defaultMatch = DEFAULT_PRODUCTS.find(
+      (dp) => (dp.id && dp.id === p.id) || (dp.slug && dp.slug === p.slug) || (dp.sku && dp.sku === p.sku)
     );
+    if (defaultMatch) {
+      const dpSub = (defaultMatch.subcategory || "").trim().toLowerCase();
+      const dpSubId = (defaultMatch.subcategory_id || "").trim().toLowerCase();
+      if (
+        dpSub === sName ||
+        dpSub === sSlug ||
+        dpSubId === sSlug ||
+        dpSub.replace(/[^a-z0-9]/g, "") === normSlug ||
+        dpSub.replace(/[^a-z0-9]/g, "") === normSub
+      ) {
+        return true;
+      }
+    }
+
+    // 5. Keyword match from subcategory name against product name and slug
+    const keyword = sName
+      .replace(/uniforms?/gi, "")
+      .replace(/suits?/gi, "")
+      .replace(/jackets?/gi, "")
+      .replace(/guards?/gi, "")
+      .replace(/gloves?/gi, "")
+      .replace(/balls?/gi, "")
+      .trim();
+
+    if (keyword.length >= 3) {
+      const cleanKeyword = keyword.toLowerCase();
+      if (pName.includes(cleanKeyword) || pSlug.includes(cleanKeyword.replace(/\s+/g, "-"))) {
+        return true;
+      }
+    }
+
+    // 6. Tags match
+    if (Array.isArray(p.tags)) {
+      const tagMatch = p.tags.some((t: string) => {
+        const normTag = String(t).toLowerCase().trim();
+        return normTag === sName || normTag === sSlug || (keyword.length >= 3 && normTag.includes(keyword.toLowerCase()));
+      });
+      if (tagMatch) return true;
+    }
+
+    return false;
   };
 
   // Calculate real product counts for subcategory pills BEFORE filtering by selected subcategory

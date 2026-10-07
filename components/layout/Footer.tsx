@@ -50,9 +50,9 @@ export default async function Footer() {
               <Image
                 src="/estrella_logo_transparent.png"
                 alt="Estrella International"
-                width={260}
-                height={60}
-                className="h-10 sm:h-12 lg:h-14 w-auto object-contain max-h-14"
+                width={320}
+                height={75}
+                className="h-12 sm:h-14 lg:h-16 xl:h-20 w-auto object-contain max-h-20"
                 priority
                 unoptimized
               />
