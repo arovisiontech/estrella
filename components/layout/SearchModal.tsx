@@ -222,9 +222,16 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                     className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#00AEF0]/50 transition group"
                   >
                     {/* Thumbnail */}
-                    <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-black border border-white/10">
+                    <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-slate-800 border border-white/10 flex items-center justify-center">
                       <Image
-                        src={product.mainImage?.src || product.main_image_url || "/images/banner-sublimation-sports.svg"}
+                        src={
+                          product.mainImage?.src ||
+                          (typeof product.mainImage === "string" ? product.mainImage : null) ||
+                          product.main_image_url ||
+                          product.image ||
+                          product.galleryImages?.[0]?.src ||
+                          "/images/banner-sublimation-sports.svg"
+                        }
                         alt={product.name}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -240,11 +247,11 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       <p className="text-xs text-slate-400 truncate mt-0.5">
                         SKU: {product.sku} • {product.subcategory || product.categoryLabel || product.category}
                       </p>
-                      {product.price && (
-                        <p className="text-xs font-black text-[#00AEF0] mt-1">
-                          {product.currency || "PKR"} {Number(product.price).toLocaleString()}
-                        </p>
-                      )}
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <span className="inline-flex items-center rounded-md bg-[#00AEF0]/15 px-2 py-0.5 text-[11px] font-bold text-[#00AEF0] border border-[#00AEF0]/30">
+                          Inquire For Quote →
+                        </span>
+                      </div>
                     </div>
                   </Link>
                 ))}

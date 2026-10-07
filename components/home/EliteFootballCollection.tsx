@@ -76,7 +76,9 @@ export const defaultFootballs: FootballItem[] = [
 
 export default function EliteFootballCollection() {
   const [footballs, setFootballs] = useState<FootballItem[]>(defaultFootballs);
+  const [isPaused, setIsPaused] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const scrollDirectionRef = useRef<number>(1); // 1 = right, -1 = left
   const supabase = createClient();
 
   const loadFootballs = useCallback(async () => {
@@ -138,13 +140,49 @@ export default function EliteFootballCollection() {
     };
   }, [loadFootballs]);
 
+  // Auto-play sliding interval (khudi agy pichy ho)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (isPaused || !scrollContainerRef.current) return;
+
+      const container = scrollContainerRef.current;
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      if (maxScroll <= 15) return;
+
+      const step = 320;
+      const currentScroll = container.scrollLeft;
+
+      if (scrollDirectionRef.current === 1) {
+        // Moving Forward
+        if (currentScroll + step >= maxScroll - 20) {
+          container.scrollTo({ left: maxScroll, behavior: "smooth" });
+          scrollDirectionRef.current = -1; // Switch to backward
+        } else {
+          container.scrollBy({ left: step, behavior: "smooth" });
+        }
+      } else {
+        // Moving Backward
+        if (currentScroll - step <= 20) {
+          container.scrollTo({ left: 0, behavior: "smooth" });
+          scrollDirectionRef.current = 1; // Switch to forward
+        } else {
+          container.scrollBy({ left: -step, behavior: "smooth" });
+        }
+      }
+    }, 3200);
+
+    return () => clearInterval(interval);
+  }, [isPaused, footballs]);
+
   const scrollLeft = () => {
+    scrollDirectionRef.current = -1;
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollBy({ left: -320, behavior: "smooth" });
     }
   };
 
   const scrollRight = () => {
+    scrollDirectionRef.current = 1;
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollBy({ left: 320, behavior: "smooth" });
     }
@@ -165,13 +203,19 @@ export default function EliteFootballCollection() {
         </div>
 
         {/* Carousel Container with Flanking Left/Right Overlay Navigation Buttons */}
-        <div className="relative px-4 sm:px-8">
+        <div
+          className="relative px-4 sm:px-8"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          onTouchStart={() => setIsPaused(true)}
+          onTouchEnd={() => setIsPaused(false)}
+        >
           
           {/* Left Overlay Slider Arrow Button */}
           <button
             onClick={scrollLeft}
             aria-label="Previous footballs"
-            className="absolute left-0 top-1/2 z-30 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-slate-900 text-white shadow-xl transition-all duration-300 hover:bg-[#00AEF0] hover:scale-110 focus:outline-none"
+            className="absolute left-0 top-1/2 z-30 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-slate-900 text-white shadow-xl transition-all duration-300 hover:bg-[#00AEF0] hover:scale-110 focus:outline-none cursor-pointer"
           >
             <ChevronLeft size={24} />
           </button>
@@ -239,7 +283,7 @@ export default function EliteFootballCollection() {
           <button
             onClick={scrollRight}
             aria-label="Next footballs"
-            className="absolute right-0 top-1/2 z-30 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-slate-900 text-white shadow-xl transition-all duration-300 hover:bg-[#00AEF0] hover:scale-110 focus:outline-none"
+            className="absolute right-0 top-1/2 z-30 -translate-y-1/2 flex h-12 w-12 items-center justify-center rounded-full bg-slate-900 text-white shadow-xl transition-all duration-300 hover:bg-[#00AEF0] hover:scale-110 focus:outline-none cursor-pointer"
           >
             <ChevronRight size={24} />
           </button>
