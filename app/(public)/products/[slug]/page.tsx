@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Home } from "lucide-react";
 import ProductGallery from "@/components/products/ProductGallery";
@@ -22,14 +23,21 @@ export async function generateMetadata({
 
   let product = await getProductBySlug(decodedSlug);
   if (!product) {
-    product = DEFAULT_PRODUCTS.find((p) => p.slug === decodedSlug) || DEFAULT_PRODUCTS[0];
+    product = DEFAULT_PRODUCTS.find((p) => p.slug === decodedSlug) || null;
+  }
+
+  if (!product) {
+    return {
+      title: "Product Not Found | Streetelle Industries",
+      description: "The requested product could not be found.",
+    };
   }
 
   return {
-    title: `${product.name} | Estrella International`,
+    title: `${product.name} | Streetelle Industries`,
     description: product.shortDescription || product.description,
     openGraph: {
-      title: `${product.name} | Estrella International`,
+      title: `${product.name} | Streetelle Industries`,
       description: product.shortDescription || product.description,
       images: [{ url: product.mainImage?.src || "/images/about/gallery-1.jpg" }],
     },
@@ -42,7 +50,11 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   let product = await getProductBySlug(decodedSlug);
   if (!product) {
-    product = DEFAULT_PRODUCTS.find((p) => p.slug === decodedSlug) || DEFAULT_PRODUCTS[0];
+    product = DEFAULT_PRODUCTS.find((p) => p.slug === decodedSlug) || null;
+  }
+
+  if (!product) {
+    notFound();
   }
 
   const allProducts = await getProducts();

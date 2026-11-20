@@ -132,10 +132,10 @@ export default function Navbar() {
         <div className="flex items-center shrink-0 z-10 bg-white relative mr-2 2xl:mr-4">
           <Link href="/" className="flex items-center py-1">
             <Image
-              src="/images/estrella-logo.png"
-              alt="Estrella International"
-              width={220}
-              height={50}
+              src="/images/streetelle-logo.png"
+              alt="Streetelle Industries"
+              width={180}
+              height={107}
               className="h-8 sm:h-10 lg:h-11 xl:h-12 w-auto object-contain max-h-12 py-0.5"
               priority
               unoptimized

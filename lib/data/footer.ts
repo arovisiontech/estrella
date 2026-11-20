@@ -42,14 +42,14 @@ export const socialLinks: SocialLink[] = [
 ];
 
 export const contactInfo = {
-  company: "ESTRELLA INTERNATIONAL SOLUTIONS",
+  company: "STREETELLE INDUSTRIES",
   location: "Sialkot 51310 - Pakistan",
   phone: "+92-52-3561460",
-  email: "info@estrella-international.com",
+  email: "info@streetelle-industries.com",
   ctaLink: "/contact",
 };
 
 export const agencyInfo = {
-  name: "Estrella Digital Team",
+  name: "Streetelle Digital Team",
   url: "#",
 };

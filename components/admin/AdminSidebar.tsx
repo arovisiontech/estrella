@@ -195,10 +195,10 @@ export default function AdminSidebar({ isOpen = true, onClose }: AdminSidebarPro
       <div className="border-b border-slate-200 p-5 bg-slate-50 flex flex-col items-start gap-2">
         <Link href="/admin" className="flex items-center">
           <Image
-            src="/images/estrella-logo.png"
-            alt="Estrella Admin"
+            src="/images/streetelle-logo.png"
+            alt="Streetelle Admin"
             width={140}
-            height={32}
+            height={83}
             className="h-6 sm:h-7 w-auto object-contain max-h-7"
             priority
             unoptimized

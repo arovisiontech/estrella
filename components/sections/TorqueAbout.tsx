@@ -69,16 +69,16 @@ export default function TorqueAbout() {
 
                 <text fontSize="10" fontWeight="bold" fill="#00AEF0" letterSpacing="3">
                   <textPath href="#circlePath" startOffset="50%" textAnchor="middle">
-                    ESTRELLA CERTIFIED QUALITY ASSURED
+                    STREETELLE CERTIFIED QUALITY ASSURED
                   </textPath>
                 </text>
               </svg>
 
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="relative h-64 w-64">
+                <div className="relative h-64 w-64 p-8">
                   <Image
-                    src="/estrella-logo.svg"
-                    alt="Estrella certification"
+                    src="/images/streetelle-logo.png"
+                    alt="Streetelle certification"
                     fill
                     className="object-contain"
                   />

@@ -55,11 +55,11 @@ export default function AdminLoginPage() {
       <section className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-xl">
         <div className="flex justify-center mb-6">
           <Image
-            src="/images/estrella-logo.png"
-            alt="Estrella Logo"
-            width={170}
-            height={38}
-            className="h-8 sm:h-9 w-auto object-contain max-h-9"
+            src="/images/streetelle-logo.png"
+            alt="Streetelle Logo"
+            width={180}
+            height={107}
+            className="h-9 sm:h-10 w-auto object-contain max-h-10"
             priority
             unoptimized
           />
@@ -75,7 +75,7 @@ export default function AdminLoginPage() {
           </h1>
 
           <p className="mt-1 text-sm text-slate-500">
-            Enter your email and password to log in to the Estrella CMS.
+            Enter your email and password to log in to the Streetelle CMS.
           </p>
         </div>
 

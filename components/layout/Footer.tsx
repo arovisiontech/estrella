@@ -45,14 +45,14 @@ export default async function Footer() {
         {/* Logo and Newsletter Section */}
         <div className="py-8 sm:py-10 border-b border-slate-800">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
-            {/* Logo (SS 5: Increased Logo Size) */}
+            {/* Logo (SS 5: Increased Logo Size, Pure White on Dark Background) */}
             <div className="relative flex items-center max-w-fit">
               <Image
-                src="/estrella_logo_transparent.png"
-                alt="Estrella International"
-                width={320}
-                height={75}
-                className="h-12 sm:h-14 lg:h-16 xl:h-20 w-auto object-contain max-h-20"
+                src="/images/streetelle-logo-white.png"
+                alt="Streetelle Industries"
+                width={260}
+                height={155}
+                className="h-14 sm:h-16 lg:h-20 w-auto object-contain max-h-20"
                 priority
                 unoptimized
               />
@@ -79,7 +79,7 @@ export default async function Footer() {
               <div className="space-y-2.5">
                 <div>
                   <p className="text-sm text-white font-semibold">
-                    Estrella International Solutions Ltd.
+                    Streetelle Industries Ltd.
                   </p>
                   <p className="text-sm text-slate-400">{contactInfo.location}</p>
                 </div>
@@ -170,7 +170,7 @@ export default async function Footer() {
         {/* Copyright Section */}
         <div className="py-5">
           <p className="text-center text-xs sm:text-sm text-slate-400">
-            © {currentYear} Estrella International Solutions. All Rights Reserved.
+            © {currentYear} Streetelle Industries. All Rights Reserved.
           </p>
         </div>
       </div>

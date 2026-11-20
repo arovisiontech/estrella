@@ -24,9 +24,13 @@ const getBaseUrl = () => {
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseUrl()),
-  title: "Estrella - Enterprise Solutions & Business Inquiry Portal",
+  title: "Streetelle Industries - Enterprise Solutions & Business Inquiry Portal",
   description:
     "Premier corporate manufacturing, bulk inquiries, enterprise distribution, and custom product development.",
+  icons: {
+    icon: "/images/streetelle-icon.png",
+    apple: "/images/streetelle-icon.png",
+  },
 };
 
 export default function RootLayout({
