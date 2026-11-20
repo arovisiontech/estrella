@@ -15,64 +15,7 @@ export interface FootballItem {
   is_active?: boolean;
 }
 
-export const defaultFootballs: FootballItem[] = [
-  {
-    id: "fb-1",
-    name: "Hybrid Soccer Balls",
-    category: "Professional Match Ball",
-    image: "/images/footballs/football-1.jpg",
-    link: "/categories/soccer-footballs",
-    is_active: true,
-  },
-  {
-    id: "fb-2",
-    name: "Stingo Sports Thermo Football",
-    category: "Thermo Bonded Match Ball",
-    image: "/images/footballs/football-2.jpg",
-    link: "/categories/soccer-footballs",
-    is_active: true,
-  },
-  {
-    id: "fb-3",
-    name: "Estrella Pro Training Ball",
-    category: "Hand Stitched Match Ball",
-    image: "/images/footballs/football-3.jpg",
-    link: "/categories/soccer-footballs",
-    is_active: true,
-  },
-  {
-    id: "fb-4",
-    name: "Royal Gold Hybrid Football",
-    category: "Tournament Official Ball",
-    image: "/images/footballs/football-4.jpg",
-    link: "/categories/soccer-footballs",
-    is_active: true,
-  },
-  {
-    id: "fb-5",
-    name: "Estrella Cyber Metallic Ball",
-    category: "High Speed Match Ball",
-    image: "/images/footballs/football-5.jpg",
-    link: "/categories/soccer-footballs",
-    is_active: true,
-  },
-  {
-    id: "fb-6",
-    name: "Estrella Sublimated Team Ball",
-    category: "Custom OEM Match Ball",
-    image: "/images/footballs/football-6.jpg",
-    link: "/categories/soccer-footballs",
-    is_active: true,
-  },
-  {
-    id: "fb-7",
-    name: "Ultra Precision Futsal Ball",
-    category: "Low Bounce Futsal Ball",
-    image: "/images/footballs/football-7.jpg",
-    link: "/categories/soccer-footballs",
-    is_active: true,
-  },
-];
+export const defaultFootballs: FootballItem[] = [];
 
 export default function EliteFootballCollection() {
   const [footballs, setFootballs] = useState<FootballItem[]>(defaultFootballs);
@@ -187,6 +130,10 @@ export default function EliteFootballCollection() {
       scrollContainerRef.current.scrollBy({ left: 320, behavior: "smooth" });
     }
   };
+
+  if (!footballs || footballs.length === 0) {
+    return null;
+  }
 
   return (
     <section className="py-16 lg:py-24 bg-white border-b border-slate-100 overflow-hidden relative">

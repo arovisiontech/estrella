@@ -126,17 +126,17 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-[100] bg-white border-b border-slate-200 shadow-xs w-full">
-      <div className="site-container h-18 sm:h-20 flex items-center justify-between gap-1 xl:gap-2 2xl:gap-4 px-3 sm:px-6 lg:px-8">
+      <div className="site-container h-20 sm:h-22 lg:h-24 flex items-center justify-between gap-1 xl:gap-2 2xl:gap-4 px-3 sm:px-6 lg:px-8">
 
-        {/* Left: Logo (Protected with shrink-0 and margin) */}
+        {/* Left: Logo (Increased size for clear readability) */}
         <div className="flex items-center shrink-0 z-10 bg-white relative mr-2 2xl:mr-4">
           <Link href="/" className="flex items-center py-1">
             <Image
-              src="/images/streetelle-logo.png"
+              src="/images/streetelle-logo-horizontal.png"
               alt="Streetelle Industries"
-              width={180}
-              height={107}
-              className="h-8 sm:h-10 lg:h-11 xl:h-12 w-auto object-contain max-h-12 py-0.5"
+              width={280}
+              height={43}
+              className="h-11 sm:h-12 lg:h-14 xl:h-15 w-auto object-contain max-h-16 py-0.5"
               priority
               unoptimized
             />

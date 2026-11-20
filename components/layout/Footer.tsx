@@ -45,14 +45,14 @@ export default async function Footer() {
         {/* Logo and Newsletter Section */}
         <div className="py-8 sm:py-10 border-b border-slate-800">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
-            {/* Logo (SS 5: Increased Logo Size, Pure White on Dark Background) */}
+            {/* Logo (Increased size, Pure White on Dark Background) */}
             <div className="relative flex items-center max-w-fit">
               <Image
-                src="/images/streetelle-logo-white.png"
+                src="/images/streetelle-logo-horizontal-white.png"
                 alt="Streetelle Industries"
-                width={260}
-                height={155}
-                className="h-14 sm:h-16 lg:h-20 w-auto object-contain max-h-20"
+                width={320}
+                height={49}
+                className="h-12 sm:h-14 lg:h-16 w-auto object-contain max-h-16"
                 priority
                 unoptimized
               />
