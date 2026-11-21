@@ -3,7 +3,7 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { Save, CheckCircle2, RotateCcw, Mail, MapPin, Phone, Clock } from "lucide-react";
 
-export interface ContactPageCMSData {
+interface ContactPageCMSData {
   heroTitle: string;
   heroSubtitle: string;
   locationTitle: string;
@@ -16,7 +16,7 @@ export interface ContactPageCMSData {
   mapEmbedUrl: string;
 }
 
-export const defaultContactCMSData: ContactPageCMSData = {
+const defaultContactCMSData: ContactPageCMSData = {
   heroTitle: "Tell Us About Your Project",
   heroSubtitle: "Share your requirements and our team will contact you with the next steps.",
   locationTitle: "Visit Our Office",
